@@ -60,5 +60,16 @@
     "webpack": "^5.11.1",
     "webpack-cli": "^4.3.1",
     "webpack-dev-server": "^3.11.1"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kirkhahn11/Joke-App.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kirkhahn11/Joke-App/issues"
+  },
+  "homepage": "https://github.com/kirkhahn11/Joke-App#readme"
 }
