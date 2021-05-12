@@ -35,8 +35,10 @@ export default class Home extends React.Component {
   render() {
     return (
      <>
-       <Background />
+     <div className="main-container">
        { this.renderPage() }
+        <Background />
+     </div>
      </>
     );
   }

@@ -4,9 +4,11 @@ export default class AddJoke extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      joke: ''
+      joke: '',
+      isClicked: false
     };
     this.handleChange = this.handleChange.bind(this);
+    this.handleClick = this.handleClick.bind(this);
   }
 
   handleChange(event) {
@@ -17,11 +19,15 @@ export default class AddJoke extends React.Component {
     event.preventDefault();
   }
 
+  handleClick(event) {
+    this.setState({ isClicked: !this.state.isClicked });
+  }
+
   render() {
     return (
-      <div className="container1 hidden">
+      <div className={`${this.state.isClicked ? 'container1-is-active' : 'container1'}`}>
         <div className="header">
-          <i id="hamburger-icon" className="fas fa-bars my-icon"></i>
+          <i className="bi bi-list" id ="hamburger-button" onClick={this.handleClick}></i>
           <h1>New Joke</h1>
         </div>
         <div id="joke-container">

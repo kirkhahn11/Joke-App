@@ -10,23 +10,23 @@ body {
   display: none;
 }
 
+.main-container {
+  position: relative;
+}
+
 .background-fixed {
+  position: fixed;
   background-color: black;
   padding: 0;
   height: 100vh;
 }
 
-.button-container {
-  height: 60vh;
-  width: 20%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
+.back-btn {
+  width: 18em;
 }
 
 .body-background {
   background-color: #1f0cee;
-  background-image: url(./img/istockphoto-1134159204-612x612.jpeg);
 }
 
 h1 {
@@ -40,19 +40,31 @@ h1 {
 
 .container1 {
   height: 100vh;
-  background-image: url(./img/istockphoto-1134159204-612x612.jpeg);
+  background-image: url(./img/ucDVfG.jpeg);
   background-size: cover;
   max-width: 1280px;
+  position: absolute;
+  width: 100vw;
+  z-index: 1;
 }
 
-#hamburger-icon {
-  font-size: 50px;
-  position: fixed;
-  top: 10px;
-  left: 10px;
-  color: black;
+.container1-is-active {
+  height: 100vh;
+  background-image: url(./img/ucDVfG.jpeg);
+  background-size: cover;
+  max-width: 1280px;
+  transform: translate(300px);
+  position: absolute;
+  width: 100vw;
+  z-index: 1;
+}
+
+#hamburger-button {
   background-color: white;
-  padding: 2px;
+  font-size: 45px;
+  position: fixed;
+  transition: 0.05s ease-out;
+  margin: 10px;
 }
 
 #joke-container {
