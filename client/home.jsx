@@ -33,11 +33,12 @@ export default class Home extends React.Component {
   }
 
   render() {
+    const { route } = this.state;
     return (
      <>
      <div className="main-container">
        { this.renderPage() }
-        <Background />
+        <Background path={route.path}/>
      </div>
      </>
     );
