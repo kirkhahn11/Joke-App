@@ -1,14 +1,27 @@
 import React from 'react';
+import CategoryForm from './category-form';
 
 export default class AddJoke extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       joke: '',
-      isClicked: false
+      isClicked: false,
+      categories: [],
+      modalHidden: false
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleClick = this.handleClick.bind(this);
+    this.addCategory = this.addCategory.bind(this);
+    this.modalClass = this.modalClass.bind(this);
+    this.modalAppear = this.modalAppear.bind(this);
+    this.categoryList = this.categoryList.bind(this);
+  }
+
+  componentDidMount() {
+    fetch('/api/jokeApp')
+      .then(res => res.json())
+      .then(categories => this.setState({ categories }));
   }
 
   handleChange(event) {
@@ -23,6 +36,48 @@ export default class AddJoke extends React.Component {
     this.setState({ isClicked: !this.state.isClicked });
   }
 
+  addCategory(category) {
+    const categoryList = [...this.state.categories];
+    fetch('/api/jokeApp', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ category: category })
+    })
+      .then(res => res.json())
+      .then(data => {
+        categoryList.push(data);
+        this.setState({ categories: categoryList, modalHidden: false });
+      });
+  }
+
+  modalClass() {
+    if (this.state.modalHidden) {
+      return 'category-modal';
+    } else {
+      return 'category-modal hidden';
+    }
+  }
+
+  modalAppear(event) {
+    this.setState({ modalHidden: !this.state.modalHidden });
+  }
+
+  categoryList() {
+    const listCategories = this.state.categories.map(categories =>
+      <option key={categories.categoryId}>
+        {categories.name}
+      </option>
+    );
+    return (
+      <select className="form-select" aria-label="Default select example" name="category">
+        <option value="">Choose A Category Asshole</option>
+        {listCategories}
+      </select>
+    );
+  }
+
   render() {
     return (
       <div className={`${this.state.isClicked ? 'container1-is-active' : 'container1'}`}>
@@ -33,9 +88,8 @@ export default class AddJoke extends React.Component {
         <div id="joke-container">
           <form>
             <div className="mb-3">
-              <select className="form-select" aria-label="Default select example" name="catagory">
-                <option value="">Choose A Catagory Asshole</option>
-              </select>
+              {this.categoryList()}
+              <button className="btn btn-primary category-button" type="button" onClick={this.modalAppear}>Add A Category</button>
             </div>
             <div className="mb-3">
               <textarea className="form-control" id="exampleFormControlTextarea1" rows="3" onChange={this.handleChange} placeholder='Please Select a Category'></textarea>
@@ -44,6 +98,12 @@ export default class AddJoke extends React.Component {
               <button onClick={this.handleSubmit} className="btn btn-primary" type="submit">Save Joke</button>
             </div>
           </form>
+        </div>
+        <div className={this.modalClass()}>
+          <div className="input-group mb-3 category-modal-input">
+            <h1>New Category</h1>
+              <CategoryForm onSubmit={this.addCategory} />
+          </div>
         </div>
       </div>
     );

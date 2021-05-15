@@ -71,6 +71,7 @@ h1 {
   margin: auto;
   width: 60%;
   padding: 10px;
+  text-align: center;
 }
 
 #text-area {
@@ -79,4 +80,23 @@ h1 {
 
 #exampleFormControlTextarea1 {
   height: 60vh;
+}
+
+.category-modal {
+  position: fixed;
+  top: 10vh;
+  left: 36vw;
+  border: solid black 2px;
+  padding: 62px;
+  background-color: black;
+}
+
+.category-button {
+  margin-top: 10px;
+}
+
+.category-modal-input {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
 }
