@@ -6,12 +6,18 @@ export default class AddJoke extends React.Component {
     super(props);
     this.state = {
       joke: '',
+<<<<<<< HEAD
       title: '',
       isClicked: false,
       categories: [],
       modalHidden: false,
       textDisabled: true,
       categoryId: ''
+=======
+      isClicked: false,
+      categories: [],
+      modalHidden: false
+>>>>>>> fd45ee5c68b194afc5b560e7834fa71c3988bfb3
     };
     this.handleChangeJoke = this.handleChangeJoke.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -21,8 +27,17 @@ export default class AddJoke extends React.Component {
     this.modalClass = this.modalClass.bind(this);
     this.modalAppear = this.modalAppear.bind(this);
     this.categoryList = this.categoryList.bind(this);
+<<<<<<< HEAD
     this.textBoxDisabled = this.textBoxDisabled.bind(this);
     this.categorySelect = this.categorySelect.bind(this);
+=======
+  }
+
+  componentDidMount() {
+    fetch('/api/jokeApp')
+      .then(res => res.json())
+      .then(categories => this.setState({ categories }));
+>>>>>>> fd45ee5c68b194afc5b560e7834fa71c3988bfb3
   }
 
   componentDidMount() {
@@ -65,7 +80,11 @@ export default class AddJoke extends React.Component {
 
   addCategory(category) {
     const categoryList = [...this.state.categories];
+<<<<<<< HEAD
     fetch('/api/jokeApp/category', {
+=======
+    fetch('/api/jokeApp', {
+>>>>>>> fd45ee5c68b194afc5b560e7834fa71c3988bfb3
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -91,6 +110,7 @@ export default class AddJoke extends React.Component {
     this.setState({ modalHidden: !this.state.modalHidden });
   }
 
+<<<<<<< HEAD
   categorySelect(event) {
     if (event.target.value === '') {
       this.setState({ textDisabled: true });
@@ -121,11 +141,20 @@ export default class AddJoke extends React.Component {
   categoryList() {
     const listCategories = this.state.categories.map(categories =>
       <option key={categories.categoryId} value={categories.categoryId}>
+=======
+  categoryList() {
+    const listCategories = this.state.categories.map(categories =>
+      <option key={categories.categoryId}>
+>>>>>>> fd45ee5c68b194afc5b560e7834fa71c3988bfb3
         {categories.name}
       </option>
     );
     return (
+<<<<<<< HEAD
       <select className="form-select" aria-label="Default select example" name="category" onChange={this.categorySelect}>
+=======
+      <select className="form-select" aria-label="Default select example" name="category">
+>>>>>>> fd45ee5c68b194afc5b560e7834fa71c3988bfb3
         <option value="">Choose A Category Asshole</option>
         {listCategories}
       </select>
