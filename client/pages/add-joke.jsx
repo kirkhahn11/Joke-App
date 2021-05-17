@@ -6,18 +6,12 @@ export default class AddJoke extends React.Component {
     super(props);
     this.state = {
       joke: '',
-<<<<<<< HEAD
       title: '',
       isClicked: false,
       categories: [],
       modalHidden: false,
       textDisabled: true,
       categoryId: ''
-=======
-      isClicked: false,
-      categories: [],
-      modalHidden: false
->>>>>>> fd45ee5c68b194afc5b560e7834fa71c3988bfb3
     };
     this.handleChangeJoke = this.handleChangeJoke.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -27,17 +21,8 @@ export default class AddJoke extends React.Component {
     this.modalClass = this.modalClass.bind(this);
     this.modalAppear = this.modalAppear.bind(this);
     this.categoryList = this.categoryList.bind(this);
-<<<<<<< HEAD
     this.textBoxDisabled = this.textBoxDisabled.bind(this);
     this.categorySelect = this.categorySelect.bind(this);
-=======
-  }
-
-  componentDidMount() {
-    fetch('/api/jokeApp')
-      .then(res => res.json())
-      .then(categories => this.setState({ categories }));
->>>>>>> fd45ee5c68b194afc5b560e7834fa71c3988bfb3
   }
 
   componentDidMount() {
@@ -80,11 +65,7 @@ export default class AddJoke extends React.Component {
 
   addCategory(category) {
     const categoryList = [...this.state.categories];
-<<<<<<< HEAD
     fetch('/api/jokeApp/category', {
-=======
-    fetch('/api/jokeApp', {
->>>>>>> fd45ee5c68b194afc5b560e7834fa71c3988bfb3
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -110,7 +91,6 @@ export default class AddJoke extends React.Component {
     this.setState({ modalHidden: !this.state.modalHidden });
   }
 
-<<<<<<< HEAD
   categorySelect(event) {
     if (event.target.value === '') {
       this.setState({ textDisabled: true });
@@ -141,20 +121,11 @@ export default class AddJoke extends React.Component {
   categoryList() {
     const listCategories = this.state.categories.map(categories =>
       <option key={categories.categoryId} value={categories.categoryId}>
-=======
-  categoryList() {
-    const listCategories = this.state.categories.map(categories =>
-      <option key={categories.categoryId}>
->>>>>>> fd45ee5c68b194afc5b560e7834fa71c3988bfb3
         {categories.name}
       </option>
     );
     return (
-<<<<<<< HEAD
       <select className="form-select" aria-label="Default select example" name="category" onChange={this.categorySelect}>
-=======
-      <select className="form-select" aria-label="Default select example" name="category">
->>>>>>> fd45ee5c68b194afc5b560e7834fa71c3988bfb3
         <option value="">Choose A Category Asshole</option>
         {listCategories}
       </select>
@@ -165,7 +136,7 @@ export default class AddJoke extends React.Component {
     return (
       <div className={`${this.state.isClicked ? 'container1-is-active' : 'container1'}`}>
         <div className="header">
-          <i className="bi bi-list" id ="hamburger-button" onClick={this.handleClick}></i>
+          <i className="bi bi-list" id="hamburger-button" onClick={this.handleClick}></i>
           <h1>New Joke</h1>
         </div>
         <div id="joke-container">
@@ -175,7 +146,7 @@ export default class AddJoke extends React.Component {
               <button className="btn btn-primary category-button" type="button" onClick={this.modalAppear}>Add A Category</button>
             </div>
             <div className="mb-3">
-             {this.textBoxDisabled()}
+              {this.textBoxDisabled()}
             </div>
             <div className="col-12 center">
               <button onClick={this.handleSubmit} className="btn btn-primary" type="submit">Save Joke</button>
@@ -185,7 +156,7 @@ export default class AddJoke extends React.Component {
         <div className={this.modalClass()}>
           <div className="input-group mb-3 category-modal-input">
             <h1>New Category</h1>
-              <CategoryForm onSubmit={this.addCategory} />
+            <CategoryForm onSubmit={this.addCategory} />
           </div>
         </div>
       </div>
