@@ -38,10 +38,6 @@ module.exports = {
     stats: 'minimal',
     proxy: {
       '/api': `http://localhost:${process.env.PORT}`
-    },
-    watchOptions: {
-      poll: true,
-      ignored: '/node_modules/'
     }
   },
   performance: {
