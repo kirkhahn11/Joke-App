@@ -1,0 +1,102 @@
+body {
+  margin: 0;
+}
+
+.center {
+  text-align: center;
+}
+
+.hidden {
+  display: none;
+}
+
+.main-container {
+  position: relative;
+}
+
+.background-fixed {
+  position: fixed;
+  background-color: black;
+  padding: 0;
+  height: 100vh;
+}
+
+.back-btn {
+  width: 18em;
+}
+
+.body-background {
+  background-color: #1f0cee;
+}
+
+h1 {
+  text-align: center;
+  font-size: 72px;
+  font-family: 'Girassol', cursive;
+  margin: 0;
+  color: white;
+  text-shadow: 0 0 8px black;
+}
+
+.container1 {
+  height: 100vh;
+  background-image: url(./img/ucDVfG.jpeg);
+  background-size: cover;
+  max-width: 1280px;
+  position: absolute;
+  width: 100vw;
+  z-index: 1;
+}
+
+.container1-is-active {
+  height: 100vh;
+  background-image: url(./img/ucDVfG.jpeg);
+  background-size: cover;
+  max-width: 1280px;
+  transform: translate(300px);
+  transition: ease-out 0.5s;
+  position: absolute;
+  width: 100vw;
+  z-index: 1;
+}
+
+#hamburger-button {
+  background-color: white;
+  font-size: 45px;
+  position: fixed;
+  margin: 10px;
+}
+
+#joke-container {
+  margin: auto;
+  width: 60%;
+  padding: 10px;
+  text-align: center;
+}
+
+#text-area {
+  padding: 200px;
+}
+
+#exampleFormControlTextarea1 {
+  height: 60vh;
+}
+
+.category-modal {
+  position: fixed;
+  top: 10vh;
+  left: 36vw;
+  border: solid black 2px;
+  padding: 62px;
+  background-color: black;
+}
+
+.category-button {
+  margin-top: 10px;
+}
+
+.category-modal-input {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
