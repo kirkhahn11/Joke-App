@@ -23,6 +23,16 @@ app.get('/api/jokeApp/categories', (req, res, next) => {
     .catch(err => next(err));
 });
 
+app.get('/api/jokeApp', (req, res, next) => {
+  const sql = `
+  select *
+  from "joke"
+  `;
+  db.query(sql)
+    .then(result => res.json(result.rows))
+    .catch(err => next(err));
+});
+
 app.post('/api/jokeApp/signIn', (req, res, next) => {
   const { email, password } = req.body;
   if (!email || !password) {
