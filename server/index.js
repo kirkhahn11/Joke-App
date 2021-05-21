@@ -111,6 +111,32 @@ app.post('/api/jokeApp', (req, res) => {
     });
 });
 
+app.delete('/api/jokeApp', (req, res) => {
+  const { jokeId } = req.body;
+  if (!jokeId) {
+    res.status(400).json({
+      error: 'JokeId is a required field'
+    });
+    return;
+  }
+  const sql = `
+  delete from "joke"
+  where "jokeId"=$1
+  returning *
+  `;
+  const params = [jokeId];
+  db.query(sql, params)
+    .then(results => {
+      res.status(201).json(results.rows);
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({
+        error: 'an unexpected error occured'
+      });
+    });
+});
+
 app.use(errorMiddleware);
 
 app.listen(process.env.PORT, () => {
