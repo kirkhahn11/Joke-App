@@ -18,7 +18,6 @@ export default class AddJoke extends React.Component {
     this.handleChangeTitle = this.handleChangeTitle.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.addCategory = this.addCategory.bind(this);
-    this.modalClass = this.modalClass.bind(this);
     this.modalAppear = this.modalAppear.bind(this);
     this.categoryList = this.categoryList.bind(this);
     this.textBoxDisabled = this.textBoxDisabled.bind(this);
@@ -77,14 +76,6 @@ export default class AddJoke extends React.Component {
         categoryList.push(data);
         this.setState({ categories: categoryList, modalHidden: false });
       });
-  }
-
-  modalClass() {
-    if (this.state.modalHidden) {
-      return 'category-modal';
-    } else {
-      return 'category-modal hidden';
-    }
   }
 
   modalAppear(event) {
@@ -153,7 +144,7 @@ export default class AddJoke extends React.Component {
             </div>
           </form>
         </div>
-        <div className={this.modalClass()}>
+        <div className={`${this.state.modalHidden ? 'category-modal' : 'category-modal hidden'}`}>
           <div className="input-group mb-3 category-modal-input">
             <h1>New Category</h1>
             <CategoryForm onSubmit={this.addCategory} />
