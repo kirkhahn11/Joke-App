@@ -25,8 +25,9 @@ app.get('/api/jokeApp/categories', (req, res, next) => {
 
 app.get('/api/jokeApp', (req, res, next) => {
   const sql = `
-  select *
+  select *, "c"."name"
   from "joke"
+  join "category" as "c" using ("categoryId")
   `;
   db.query(sql)
     .then(result => res.json(result.rows))

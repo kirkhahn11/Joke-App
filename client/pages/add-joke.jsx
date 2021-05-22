@@ -22,6 +22,7 @@ export default class AddJoke extends React.Component {
     this.categoryList = this.categoryList.bind(this);
     this.textBoxDisabled = this.textBoxDisabled.bind(this);
     this.categorySelect = this.categorySelect.bind(this);
+    this.onClickModalClose = this.onClickModalClose.bind(this);
   }
 
   componentDidMount() {
@@ -91,6 +92,10 @@ export default class AddJoke extends React.Component {
     }
   }
 
+  onClickModalClose() {
+    this.setState({ modalHidden: false });
+  }
+
   textBoxDisabled() {
     if (this.state.textDisabled) {
       return (
@@ -145,6 +150,7 @@ export default class AddJoke extends React.Component {
           </form>
         </div>
         <div className={`${this.state.modalHidden ? 'category-modal' : 'category-modal hidden'}`}>
+          <button type="button" className="btn-close modal-close bg-white" aria-label="Close" onClick={this.onClickModalClose}></button>
           <div className="input-group mb-3 category-modal-input">
             <h1>New Category</h1>
             <CategoryForm onSubmit={this.addCategory} />

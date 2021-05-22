@@ -100,3 +100,14 @@ h1 {
   flex-direction: column;
   text-align: center;
 }
+
+.modal-close {
+  background-color: white;
+  position: relative;
+  top: -50px;
+  left: -50px;
+}
+
+.mt-n1 {
+  margin-top: -10px;
+}

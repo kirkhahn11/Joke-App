@@ -41,7 +41,6 @@ export default class OldJokes extends React.Component {
           if (jokeList[i].jokeId.toString() === event.target.value.toString()) {
             jokeList.splice(i, 1);
             this.setState({ jokes: jokeList });
-            // this.setState({ jokes: jokeList.slice(i, 1) });
           }
         }
       });
@@ -56,8 +55,9 @@ export default class OldJokes extends React.Component {
               <input className="form-check-input" type="checkbox" name="radioNoLabel" id="radioNoLabel1" value={jokes.jokeId} aria-label="..."></input>
               <h4 className="ms-1">{jokes.title}</h4>
             </div>
-            <small>Approx Minutes: {jokes.approxMinutes}</small>
-            <div className="d-flex">
+            <small className="lh-lg"><b>Approx Minutes: </b> {jokes.approxMinutes}</small>
+            <small className="lh-lg"><b>Category: </b>{jokes.name}</small>
+            <div className="d-flex mt-n1">
               <button className="btn btn-link" type="button" data-bs-toggle="modal" data-bs-target="exampleModal">Edit</button>
               <button type="button" className="btn btn-link link-danger" onClick={this.deleteJoke} value={jokes.jokeId}>Delete</button>
             </div>
