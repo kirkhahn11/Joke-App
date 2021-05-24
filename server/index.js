@@ -138,6 +138,39 @@ app.delete('/api/jokeApp', (req, res) => {
     });
 });
 
+app.patch('/api/jokeApp/:jokeId', (req, res) => {
+  const { joke, title, approxMinutes, categoryId, jokeId } = req.body;
+  if (!jokeId) {
+    res.status(400).json({
+      error: 'JokeId is a required field'
+    });
+    return;
+  }
+  if (!joke || !title || !approxMinutes || !categoryId) {
+    res.status(400).json({
+      error: 'All fields required'
+    });
+    return;
+  }
+  const sql = `
+  update "joke"
+  set "joke"=$1, "title"=$2, "approxMinutes"=$3, "categoryId"=$4
+  where "jokeId"=$5
+  returning *
+  `;
+  const params = [joke, title, approxMinutes, categoryId, jokeId];
+  db.query(sql, params)
+    .then(results => {
+      res.status(201).json(results.rows);
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({
+        error: 'an unexpected error occured'
+      });
+    });
+});
+
 app.use(errorMiddleware);
 
 app.listen(process.env.PORT, () => {
