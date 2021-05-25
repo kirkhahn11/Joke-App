@@ -103,16 +103,16 @@ export default class OldJokes extends React.Component {
           <i className="bi bi-list" id="hamburger-button" onClick={this.handleClick}></i>
           <h1>Joke List</h1>
         </div>
-        <div className="list-group m-auto mt-1 w-50">
+        <div className="list-group m-auto mt-1 w-75">
           {this.renderJokeList()}
           <button type="button" className="btn btn-primary w-25 m-auto mt-1">Create Setlist</button>
         </div>
           <div className={this.state.isClickedEdit ? 'modal-is-active' : 'modal'}tabIndex="-1">
             <div className="modal-dialog">
-              <div className="modal-content">
+              <div className="modal-content bg-dark text-white">
               <div className="modal-header ps-10">
                 <h3 className="modal-title"><b>Edit Joke</b></h3>
-                  <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={this.closeModal}></button>
+                  <button type="button" className="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close" onClick={this.closeModal}></button>
                 </div>
               <EditJokeForm jokes={this.state.editedJoke} jokeId={this.state.targetId} onSubmit={this.editJoke}/>
             </div>

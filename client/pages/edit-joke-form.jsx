@@ -11,9 +11,7 @@ export default class EditJokeForm extends React.Component {
       categories: []
     };
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleChangeTitle = this.handleChangeTitle.bind(this);
-    this.handleChangeJoke = this.handleChangeJoke.bind(this);
-    this.handleChangeApproxMinutes = this.handleChangeApproxMinutes.bind(this);
+    this.handleChange = this.handleChange.bind(this);
     this.categoryList = this.categoryList.bind(this);
     this.categorySelect = this.categorySelect.bind(this);
   }
@@ -24,16 +22,13 @@ export default class EditJokeForm extends React.Component {
       .then(categories => this.setState({ categories }));
   }
 
-  handleChangeTitle(event) {
-    this.setState({ title: event.target.value });
-  }
+  handleChange(event) {
+    const name = event.target.name;
+    const value = event.target.value;
 
-  handleChangeJoke(event) {
-    this.setState({ joke: event.target.value });
-  }
-
-  handleChangeApproxMinutes(event) {
-    this.setState({ approxMinutes: event.target.value });
+    this.setState({
+      [name]: value
+    });
   }
 
   categorySelect(event) {
@@ -104,14 +99,14 @@ export default class EditJokeForm extends React.Component {
     <form onSubmit={this.handleSubmit}>
       <div className="mb-3 p-1">
         <label htmlFor="exampleFormControlInput1" className="form-label"></label>
-        <input type="title" className="form-control" onChange={this.handleChangeTitle} placeholder={`Title: ${this.props.jokes.title}`}></input>
-        <input type="number" className="form-control mt-1" onChange={this.handleChangeApproxMinutes} placeholder={`Approx Minutes : ${this.props.jokes.approxMinutes}`}></input>
+          <input type="title" className="form-control" name='title' onChange={this.handleChange} placeholder={`Title: ${this.props.jokes.title}`}></input>
+          <input type="number" className="form-control mt-1" name='approxMinutes' onChange={this.handleChange} placeholder={`Approx Minutes : ${this.props.jokes.approxMinutes}`}></input>
         {this.categoryList()}
       </div>
         <div className="mb-3 text-center p-1">
           <label htmlFor="exampleFormControlTextarea1" className="form-label"></label>
-          <textarea className="form-control" id="exampleFormControlTextarea2" rows="3" onChange={this.handleChangeJoke} placeholder={`Joke: '${this.props.jokes.joke}`}></textarea>
-          <button className="btn btn-primary mt-3" type="submit" id="button-addon2">Update Your Shit Joke?</button>
+          <textarea className="form-control" name='joke' id="exampleFormControlTextarea2" rows="3" onChange={this.handleChange} placeholder={`Joke: '${this.props.jokes.joke}`}></textarea>
+          <button className="btn btn-primary mt-3" type="submit" id="button-addon2">Update Your Joke?</button>
         </div>
     </form>
     );

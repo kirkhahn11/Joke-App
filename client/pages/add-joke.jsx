@@ -108,7 +108,7 @@ export default class AddJoke extends React.Component {
       return (
         <div className="mb-3">
           <input type="text" className="form-control" placeholder="Add A Title" aria-label="Add A Title" aria-describedby="basic-addon1" onChange={this.handleChangeTitle} value={this.state.title}></input>
-          <textarea className="form-control mt-1" id="exampleFormControlTextarea1" rows="3" onChange={this.handleChangeJoke} placeholder='Maybe Try Being Funny This Time' value={this.state.joke}></textarea>;
+          <textarea className="form-control mt-1" id="exampleFormControlTextarea1" rows="3" onChange={this.handleChangeJoke} placeholder='Your Joke Here' value={this.state.joke}></textarea>;
         </div>
       );
     }
@@ -122,7 +122,7 @@ export default class AddJoke extends React.Component {
     );
     return (
       <select className="form-select" aria-label="Default select example" name="category" onChange={this.categorySelect}>
-        <option value="">Choose A Category Asshole</option>
+        <option value="">Choose A Category</option>
         {listCategories}
       </select>
     );
