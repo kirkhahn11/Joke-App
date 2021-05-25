@@ -108,7 +108,7 @@ export default class OldJokes extends React.Component {
           <button type="button" className="btn btn-primary w-25 m-auto mt-1">Create Setlist</button>
         </div>
           <div className={this.state.isClickedEdit ? 'modal-is-active' : 'modal'}tabIndex="-1">
-            <div className="modal-dialog">
+            <div className="modal-dialog modal-xl">
               <div className="modal-content bg-dark text-white">
               <div className="modal-header ps-10">
                 <h3 className="modal-title"><b>Edit Joke</b></h3>
