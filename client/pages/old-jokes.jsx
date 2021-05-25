@@ -1,16 +1,22 @@
 import React from 'react';
+import EditJokeForm from './edit-joke-form';
 
 export default class OldJokes extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       jokes: [],
+      editedJoke: [],
+      targetId: '',
       isClicked: false,
-      isClickedDelete: false
+      isClickedEdit: false
     };
     this.handleClick = this.handleClick.bind(this);
     this.renderJokeList = this.renderJokeList.bind(this);
     this.deleteJoke = this.deleteJoke.bind(this);
+    this.editModal = this.editModal.bind(this);
+    this.closeModal = this.closeModal.bind(this);
+    this.editJoke = this.editJoke.bind(this);
   }
 
   componentDidMount() {
@@ -41,10 +47,31 @@ export default class OldJokes extends React.Component {
           if (jokeList[i].jokeId.toString() === event.target.value.toString()) {
             jokeList.splice(i, 1);
             this.setState({ jokes: jokeList });
-            // this.setState({ jokes: jokeList.slice(i, 1) });
           }
         }
       });
+  }
+
+  editModal(event) {
+    for (let i = 0; i < this.state.jokes.length; i++) {
+      if (this.state.jokes[i].jokeId.toString() === event.target.value.toString()) {
+        this.setState({ isClickedEdit: !this.state.isClickedEdit, targetId: event.target.value, editedJoke: this.state.jokes[i] });
+      }
+    }
+  }
+
+  closeModal() {
+    this.setState({ isClickedEdit: !this.state.isClickedEdit });
+  }
+
+  editJoke(editedJoke) {
+    const jokeList = [...this.state.jokes];
+    for (let i = 0; i < jokeList.length; i++) {
+      if (jokeList[i].jokeId === editedJoke.jokeId) {
+        jokeList.splice(i, 1, editedJoke);
+        this.setState({ jokes: jokeList, isClickedEdit: false });
+      }
+    }
   }
 
   renderJokeList() {
@@ -56,9 +83,10 @@ export default class OldJokes extends React.Component {
               <input className="form-check-input" type="checkbox" name="radioNoLabel" id="radioNoLabel1" value={jokes.jokeId} aria-label="..."></input>
               <h4 className="ms-1">{jokes.title}</h4>
             </div>
-            <small>Approx Minutes: {jokes.approxMinutes}</small>
-            <div className="d-flex">
-              <button className="btn btn-link" type="button" data-bs-toggle="modal" data-bs-target="exampleModal">Edit</button>
+            <small className="lh-lg"><b>Approx Minutes: </b> {jokes.approxMinutes}</small>
+            <small className="lh-lg"><b>Category: </b>{jokes.name}</small>
+            <div className="d-flex mt-n1">
+              <button className="btn btn-link" type="button" onClick={this.editModal} value={jokes.jokeId}>Edit</button>
               <button type="button" className="btn btn-link link-danger" onClick={this.deleteJoke} value={jokes.jokeId}>Delete</button>
             </div>
           </div>
@@ -75,13 +103,22 @@ export default class OldJokes extends React.Component {
           <i className="bi bi-list" id="hamburger-button" onClick={this.handleClick}></i>
           <h1>Joke List</h1>
         </div>
-        <div className="list-group m-auto mt-1 w-50">
+        <div className="list-group m-auto mt-1 w-75">
           {this.renderJokeList()}
           <button type="button" className="btn btn-primary w-25 m-auto mt-1">Create Setlist</button>
         </div>
-
+          <div className={this.state.isClickedEdit ? 'modal-is-active' : 'modal'}tabIndex="-1">
+            <div className="modal-dialog">
+              <div className="modal-content bg-dark text-white">
+              <div className="modal-header ps-10">
+                <h3 className="modal-title"><b>Edit Joke</b></h3>
+                  <button type="button" className="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close" onClick={this.closeModal}></button>
+                </div>
+              <EditJokeForm jokes={this.state.editedJoke} jokeId={this.state.targetId} onSubmit={this.editJoke}/>
+            </div>
+          </div>
+        </div>
       </div>
-
     );
   }
 }

@@ -22,6 +22,7 @@ export default class AddJoke extends React.Component {
     this.categoryList = this.categoryList.bind(this);
     this.textBoxDisabled = this.textBoxDisabled.bind(this);
     this.categorySelect = this.categorySelect.bind(this);
+    this.onClickModalClose = this.onClickModalClose.bind(this);
   }
 
   componentDidMount() {
@@ -91,6 +92,10 @@ export default class AddJoke extends React.Component {
     }
   }
 
+  onClickModalClose() {
+    this.setState({ modalHidden: false });
+  }
+
   textBoxDisabled() {
     if (this.state.textDisabled) {
       return (
@@ -103,7 +108,7 @@ export default class AddJoke extends React.Component {
       return (
         <div className="mb-3">
           <input type="text" className="form-control" placeholder="Add A Title" aria-label="Add A Title" aria-describedby="basic-addon1" onChange={this.handleChangeTitle} value={this.state.title}></input>
-          <textarea className="form-control mt-1" id="exampleFormControlTextarea1" rows="3" onChange={this.handleChangeJoke} placeholder='Maybe Try Being Funny This Time' value={this.state.joke}></textarea>;
+          <textarea className="form-control mt-1" id="exampleFormControlTextarea1" rows="3" onChange={this.handleChangeJoke} placeholder='Your Joke Here' value={this.state.joke}></textarea>;
         </div>
       );
     }
@@ -117,7 +122,7 @@ export default class AddJoke extends React.Component {
     );
     return (
       <select className="form-select" aria-label="Default select example" name="category" onChange={this.categorySelect}>
-        <option value="">Choose A Category Asshole</option>
+        <option value="">Choose A Category</option>
         {listCategories}
       </select>
     );
@@ -145,6 +150,7 @@ export default class AddJoke extends React.Component {
           </form>
         </div>
         <div className={`${this.state.modalHidden ? 'category-modal' : 'category-modal hidden'}`}>
+          <button type="button" className="btn-close modal-close bg-white" aria-label="Close" onClick={this.onClickModalClose}></button>
           <div className="input-group mb-3 category-modal-input">
             <h1>New Category</h1>
             <CategoryForm onSubmit={this.addCategory} />
