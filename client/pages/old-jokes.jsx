@@ -1,5 +1,6 @@
 import React from 'react';
 import EditJokeForm from './edit-joke-form';
+import ConfirmSetlistForm from './confirm-setlist-form';
 
 export default class OldJokes extends React.Component {
   constructor(props) {
@@ -10,7 +11,9 @@ export default class OldJokes extends React.Component {
       targetId: '',
       isClicked: false,
       isClickedEdit: false,
-      setlistJokes: []
+      isClickedSetlist: false,
+      setlistJokes: [],
+      setlistJokelist: []
     };
     this.handleClick = this.handleClick.bind(this);
     this.renderJokeList = this.renderJokeList.bind(this);
@@ -19,6 +22,8 @@ export default class OldJokes extends React.Component {
     this.closeModal = this.closeModal.bind(this);
     this.editJoke = this.editJoke.bind(this);
     this.jokeSelect = this.jokeSelect.bind(this);
+    this.setlistModal = this.setlistModal.bind(this);
+    this.closeSetlistModal = this.closeSetlistModal.bind(this);
   }
 
   componentDidMount() {
@@ -62,8 +67,24 @@ export default class OldJokes extends React.Component {
     }
   }
 
+  setlistModal() {
+    const setlistJokelist = [];
+    for (let i = 0; i < this.state.jokes.length; i++) {
+      for (let x = 0; x < this.state.setlistJokes.length; x++) {
+        if (this.state.jokes[i].jokeId.toString() === this.state.setlistJokes[x]) {
+          setlistJokelist.push(this.state.jokes[i]);
+        }
+      }
+    }
+    this.setState({ isClickedSetlist: !this.state.isClickedSetlist, setlistJokelist });
+  }
+
   closeModal() {
     this.setState({ isClickedEdit: !this.state.isClickedEdit });
+  }
+
+  closeSetlistModal() {
+    this.setState({ isClickedSetlist: !this.state.isClickedSetlist });
   }
 
   editJoke(editedJoke) {
@@ -119,19 +140,28 @@ export default class OldJokes extends React.Component {
           <h1>Joke List</h1>
         </div>
         <div className="list-group m-auto mt-1 w-75">
-          <form action="" className="text-center">
               {this.renderJokeList()}
-            <button type="submit" className="btn btn-primary w-25 m-auto mt-1">Create Setlist</button>
-          </form>
+            <button type="submit" className="btn btn-primary w-25 m-auto mt-1" onClick={this.setlistModal}>Create Setlist</button>
         </div>
           <div className={this.state.isClickedEdit ? 'modal-is-active' : 'modal'}tabIndex="-1">
             <div className="modal-dialog modal-xl">
               <div className="modal-content bg-dark text-white">
-              <div className="modal-header ps-10">
-                <h3 className="modal-title"><b>Edit Joke</b></h3>
+                <div className="modal-header ps-10">
+                  <h3 className="modal-title"><b>Edit Joke</b></h3>
                   <button type="button" className="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close" onClick={this.closeModal}></button>
                 </div>
               <EditJokeForm jokes={this.state.editedJoke} jokeId={this.state.targetId} onSubmit={this.editJoke}/>
+            </div>
+          </div>
+        </div>
+        <div className={this.state.isClickedSetlist ? 'modal-is-active' : 'modal'} tabIndex="-1">
+          <div className="modal-dialog modal-xl">
+            <div className="modal-content bg-dark text-white">
+              <div className="modal-header ps-10">
+                <h3 className="modal-title"><b>Confirm Setlist</b></h3>
+                <button type="button" className="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close" onClick={this.closeSetlistModal}></button>
+              </div>
+              <ConfirmSetlistForm setlistJokes={this.state.setlistJokelist} />
             </div>
           </div>
         </div>
