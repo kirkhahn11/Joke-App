@@ -9,7 +9,8 @@ export default class OldJokes extends React.Component {
       editedJoke: [],
       targetId: '',
       isClicked: false,
-      isClickedEdit: false
+      isClickedEdit: false,
+      setlistJokes: []
     };
     this.handleClick = this.handleClick.bind(this);
     this.renderJokeList = this.renderJokeList.bind(this);
@@ -17,6 +18,7 @@ export default class OldJokes extends React.Component {
     this.editModal = this.editModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
     this.editJoke = this.editJoke.bind(this);
+    this.jokeSelect = this.jokeSelect.bind(this);
   }
 
   componentDidMount() {
@@ -74,24 +76,37 @@ export default class OldJokes extends React.Component {
     }
   }
 
+  jokeSelect(event) {
+    const setlistJokes = [...this.state.setlistJokes];
+    const setlistIndex = setlistJokes.indexOf(event.target.value);
+    if (setlistJokes.length === 0) {
+      setlistJokes.push(event.target.value);
+    } else if (setlistIndex === -1) {
+      setlistJokes.push(event.target.value);
+    } else {
+      setlistJokes.splice(setlistIndex, 1);
+    }
+    this.setState({ setlistJokes: setlistJokes });
+  }
+
   renderJokeList() {
     return (
       this.state.jokes.map(jokes =>
-        <div className="list-group-item list-group-item-action mb-1" key={jokes.jokeId} value={jokes.jokeId}>
-          <div className="d-flex w-100 justify-content-between">
-            <div className="d-flex">
-              <input className="form-check-input" type="checkbox" name="radioNoLabel" id="radioNoLabel1" value={jokes.jokeId} aria-label="..."></input>
-              <h4 className="ms-1">{jokes.title}</h4>
+          <div className="list-group-item list-group-item-action mb-1" key={jokes.jokeId} value={jokes.jokeId}>
+            <div className="d-flex w-100 justify-content-between">
+              <div className="d-flex">
+                <input className="form-check-input" type="checkbox" onClick={this.jokeSelect} name="radioNoLabel" id="radioNoLabel1" value={jokes.jokeId} aria-label="..."></input>
+                <h4 className="ms-1">{jokes.title}</h4>
+              </div>
+              <small className="lh-lg"><b>Approx Minutes: </b> {jokes.approxMinutes}</small>
+              <small className="lh-lg"><b>Category: </b>{jokes.name}</small>
+              <div className="d-flex mt-n1">
+                <button className="btn btn-link" type="button" onClick={this.editModal} value={jokes.jokeId}>Edit</button>
+                <button type="button" className="btn btn-link link-danger" onClick={this.deleteJoke} value={jokes.jokeId}>Delete</button>
+              </div>
             </div>
-            <small className="lh-lg"><b>Approx Minutes: </b> {jokes.approxMinutes}</small>
-            <small className="lh-lg"><b>Category: </b>{jokes.name}</small>
-            <div className="d-flex mt-n1">
-              <button className="btn btn-link" type="button" onClick={this.editModal} value={jokes.jokeId}>Edit</button>
-              <button type="button" className="btn btn-link link-danger" onClick={this.deleteJoke} value={jokes.jokeId}>Delete</button>
-            </div>
+            <p>{jokes.joke}</p>
           </div>
-          <p>{jokes.joke}</p>
-        </div>
       )
     );
   }
@@ -104,8 +119,10 @@ export default class OldJokes extends React.Component {
           <h1>Joke List</h1>
         </div>
         <div className="list-group m-auto mt-1 w-75">
-          {this.renderJokeList()}
-          <button type="button" className="btn btn-primary w-25 m-auto mt-1">Create Setlist</button>
+          <form action="" className="text-center">
+              {this.renderJokeList()}
+            <button type="submit" className="btn btn-primary w-25 m-auto mt-1">Create Setlist</button>
+          </form>
         </div>
           <div className={this.state.isClickedEdit ? 'modal-is-active' : 'modal'}tabIndex="-1">
             <div className="modal-dialog modal-xl">
