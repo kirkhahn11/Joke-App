@@ -130,3 +130,19 @@ h1 {
 .ps-10 {
   padding-left: 37%;
 }
+
+.ms-10 {
+  margin-left: 10%;
+}
+
+.flex-basis-60 {
+  flex-basis: 60%;
+}
+
+#w-90 {
+  width: 90%;
+}
+
+.flex-basis-300 {
+  flex-basis: 300%;
+}

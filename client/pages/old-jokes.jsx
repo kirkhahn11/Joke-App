@@ -13,7 +13,8 @@ export default class OldJokes extends React.Component {
       isClickedEdit: false,
       isClickedSetlist: false,
       setlistJokes: [],
-      setlistJokelist: []
+      setlistJokelist: [],
+      setlistName: ''
     };
     this.handleClick = this.handleClick.bind(this);
     this.renderJokeList = this.renderJokeList.bind(this);
@@ -24,6 +25,7 @@ export default class OldJokes extends React.Component {
     this.jokeSelect = this.jokeSelect.bind(this);
     this.setlistModal = this.setlistModal.bind(this);
     this.closeSetlistModal = this.closeSetlistModal.bind(this);
+    this.handleChangeName = this.handleChangeName.bind(this);
   }
 
   componentDidMount() {
@@ -110,6 +112,10 @@ export default class OldJokes extends React.Component {
     this.setState({ setlistJokes: setlistJokes });
   }
 
+  handleChangeName(event) {
+    this.setState({ setlistName: event.target.value });
+  }
+
   renderJokeList() {
     return (
       this.state.jokes.map(jokes =>
@@ -155,11 +161,15 @@ export default class OldJokes extends React.Component {
           </div>
         </div>
         <div className={this.state.isClickedSetlist ? 'modal-is-active' : 'modal'} tabIndex="-1">
-          <div className="modal-dialog modal-xl">
+          <div className="modal-dialog modal-m">
             <div className="modal-content bg-dark text-white">
-              <div className="modal-header ps-10">
-                <h3 className="modal-title"><b>Confirm Setlist</b></h3>
+              <div className="modal-header ps-10 pt-0 pb-0">
+                <input type="text" className="form-control bg-dark text-white" id='w-90' placeholder="Add A Title" aria-label="Setlist Name..." aria-describedby="basic-addon1" onChange={this.handleChangeName}></input>
                 <button type="button" className="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close" onClick={this.closeSetlistModal}></button>
+              </div>
+              <div className='d-flex border-bottom border-white mt-1'>
+                <h6 className='ms-10 flex-basis-60'>Title</h6>
+                <h6>Minutes</h6>
               </div>
               <ConfirmSetlistForm setlistJokes={this.state.setlistJokelist} />
             </div>
