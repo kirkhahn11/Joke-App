@@ -34,6 +34,18 @@ app.get('/api/jokeApp', (req, res, next) => {
     .catch(err => next(err));
 });
 
+app.get('/api/jokeApp/setlists', (req, res, next) => {
+  const sql = `
+  select "s"."setlistName", "s"."totalMinutes", "j"."title"
+  from "setlistJokes"
+  join "setlist" as "s" using ("setlistId")
+  join "joke" as "j" using ("jokeId")
+  `;
+  db.query(sql)
+    .then(results => res.json(results.rows))
+    .catch(err => next(err));
+});
+
 app.post('/api/jokeApp/signIn', (req, res, next) => {
   const { email, password } = req.body;
   if (!email || !password) {
@@ -110,6 +122,45 @@ app.post('/api/jokeApp', (req, res) => {
         error: 'an unexpected error occured'
       });
     });
+});
+
+app.post('/api/jokeApp/setlist', (req, res, next) => {
+  const { name, jokeId, totalMinutes } = req.body;
+  if (!name || !jokeId || !totalMinutes) {
+    res.status(400).json({
+      error: 'JokeId, name, and totalMinutes are required field'
+    });
+    return;
+  }
+  const userId = 1;
+  const sql = `
+  insert into "setlist" ("setlistName", "userId", "totalMinutes")
+  values ($1, $2, $3)
+  returning *
+  `;
+  const params = [name, userId, totalMinutes];
+  db.query(sql, params)
+    .then(results => {
+      const { rows: [newSetlist] } = results;
+      const params = [newSetlist.setlistId];
+      const jokeInserts = jokeId.map(id => {
+        params.push(id);
+        return `($1, $${params.length})`;
+      });
+      const jokeSql = `
+      insert into "setlistJokes"
+        ("setlistId", "jokeId")
+        values
+          ${jokeInserts.join(', ')}
+      `;
+      db.query(jokeSql, params)
+        .then(results => {
+          const [newSetlistJoke] = results.rows;
+          res.status(201).json(newSetlistJoke);
+        })
+        .catch(e => next(e));
+    })
+    .catch(e => next(e));
 });
 
 app.delete('/api/jokeApp', (req, res) => {

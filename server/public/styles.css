@@ -143,6 +143,14 @@ h1 {
   width: 90%;
 }
 
+.w-60 {
+  width: 68%;
+}
+
+.w-30 {
+  width: 30%;
+}
+
 .flex-basis-300 {
   flex-basis: 300%;
 }
