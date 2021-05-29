@@ -6,10 +6,15 @@ export default class Setlists extends React.Component {
     this.state = {
       setlists: [],
       title: [],
-      isClicked: false
+      isClicked: false,
+      isClickedDelete: false,
+      deleteSetlist: ''
     };
     this.handleClick = this.handleClick.bind(this);
     this.renderSetlist = this.renderSetlist.bind(this);
+    this.deleteModal = this.deleteModal.bind(this);
+    this.closeModal = this.closeModal.bind(this);
+    this.deleteSetlist = this.deleteSetlist.bind(this);
   }
 
   componentDidMount() {
@@ -24,8 +29,42 @@ export default class Setlists extends React.Component {
     this.setState({ isClicked: !this.state.isClicked });
   }
 
-  renderSetlist() {
+  deleteModal(event) {
+    for (let i = 0; i < this.state.setlists.length; i++) {
+      if (this.state.setlists[i].setlistId.toString() === event.target.value.toString()) {
+        this.setState({ isClickedDelete: !this.state.isClickedDelete, deleteSetlist: this.state.setlists[i] });
+      }
+    }
+  }
 
+  closeModal() {
+    this.setState({ isClickedDelete: !this.state.isClickedDelete });
+  }
+
+  deleteSetlist() {
+    const setlists = [...this.state.setlists];
+    const setlistId = {
+      setlistId: this.state.deleteSetlist.setlistId
+    };
+    fetch('/api/jokeApp/setlist', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(setlistId)
+    })
+      .then(res => res.json())
+      .then(data => {
+        for (let i = 0; i < setlists.length; i++) {
+          if (setlists[i].setlistId.toString() === this.state.deleteSetlist.setlistId.toString()) {
+            setlists.splice(i, 1);
+            this.setState({ setlists: setlists, isClickedDelete: false, deleteSetlist: '' });
+          }
+        }
+      });
+  }
+
+  renderSetlist() {
     return (
       this.state.setlists.map(setlist =>
           <div className="accordion-item" key={setlist.setlistId}>
@@ -61,6 +100,19 @@ export default class Setlists extends React.Component {
         </div>
         <div className="accordion-flush m-auto w-75" id="accordionFlushExample">
           {this.renderSetlist()}
+        </div>
+        <div className={`${this.state.isClickedDelete ? 'modal-is-active' : 'modal'}`} tabIndex="-1">
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">{`Delete ${this.state.deleteSetlist.setlistName}`}</h5>
+                <button type="button" className="btn-close" aria-label="Close" onClick={this.closeModal}></button>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-danger" onClick={this.deleteSetlist}>Confirm Delete</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );
