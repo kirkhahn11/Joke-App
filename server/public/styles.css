@@ -154,3 +154,7 @@ h1 {
 .flex-basis-300 {
   flex-basis: 300%;
 }
+
+.fb-30 {
+  flex-basis: 30%;
+}

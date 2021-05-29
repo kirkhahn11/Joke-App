@@ -100,7 +100,7 @@ export default class AddJoke extends React.Component {
     if (this.state.textDisabled) {
       return (
         <div className="mb-3">
-          <input disabled type="text" className="form-control" placeholder="Select A Category" aria-label="Title" aria-describedby="basic-addon1" onChange={this.handleChangeTitle}></input>
+          <input disabled type="text" className="form-control" placeholder="Select A Category" aria-label="Title" aria-describedby="basic-addon1" onChange={this.handleChangeTitle} value={this.state.title}></input>
           <textarea disabled className="form-control mt-1" id="exampleFormControlTextarea1" rows="3" onChange={this.handleChangeJoke} placeholder='Please Select a Category'></textarea>;
         </div>
       );

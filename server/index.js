@@ -35,13 +35,32 @@ app.get('/api/jokeApp', (req, res, next) => {
 });
 
 app.get('/api/jokeApp/setlists', (req, res, next) => {
+  const userId = 1;
   const sql = `
-  select "s"."setlistName", "s"."totalMinutes", "j"."title"
-  from "setlistJokes"
-  join "setlist" as "s" using ("setlistId")
-  join "joke" as "j" using ("jokeId")
+  with "jokes" as (
+    select "s"."setlistId", array_to_json(array_agg(json_build_object('jokeId', "s"."jokeId", 'title', "s"."title"))) as matching
+    from(
+      select
+        "sj"."setlistId",
+        "jk"."jokeId",
+        "title",
+        "joke"
+      from "joke" as "jk"
+      join "setlistJokes" as "sj" using ("jokeId")
+    ) as "s"
+    group by "s"."setlistId"
+  )
+  select
+      "setlistId",
+      "totalMinutes",
+      "setlistName",
+      coalesce((select matching from "jokes" where "jokes"."setlistId" = "sl"."setlistId"),
+      '[]'::json) as "jokes"
+      from "setlist" as "sl"
+      where "sl"."userId" = $1;
   `;
-  db.query(sql)
+  const params = [userId];
+  db.query(sql, params)
     .then(results => res.json(results.rows))
     .catch(err => next(err));
 });
