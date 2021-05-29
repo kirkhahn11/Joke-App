@@ -42,7 +42,7 @@ export default class EditJokeForm extends React.Component {
       </option>
     );
     return (
-      <select className="form-select" aria-label="Default select example" name="category" onChange={this.categorySelect}>
+      <select className="form-select mt-1" aria-label="Default select example" name="category" onChange={this.categorySelect}>
         <option value="">{this.props.jokes.name}</option>
         {listCategories}
       </select>

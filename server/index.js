@@ -34,6 +34,37 @@ app.get('/api/jokeApp', (req, res, next) => {
     .catch(err => next(err));
 });
 
+app.get('/api/jokeApp/setlists', (req, res, next) => {
+  const userId = 1;
+  const sql = `
+  with "jokes" as (
+    select "s"."setlistId", array_to_json(array_agg(json_build_object('jokeId', "s"."jokeId", 'title', "s"."title"))) as matching
+    from(
+      select
+        "sj"."setlistId",
+        "jk"."jokeId",
+        "title",
+        "joke"
+      from "joke" as "jk"
+      join "setlistJokes" as "sj" using ("jokeId")
+    ) as "s"
+    group by "s"."setlistId"
+  )
+  select
+      "setlistId",
+      "totalMinutes",
+      "setlistName",
+      coalesce((select matching from "jokes" where "jokes"."setlistId" = "sl"."setlistId"),
+      '[]'::json) as "jokes"
+      from "setlist" as "sl"
+      where "sl"."userId" = $1;
+  `;
+  const params = [userId];
+  db.query(sql, params)
+    .then(results => res.json(results.rows))
+    .catch(err => next(err));
+});
+
 app.post('/api/jokeApp/signIn', (req, res, next) => {
   const { email, password } = req.body;
   if (!email || !password) {
@@ -110,6 +141,45 @@ app.post('/api/jokeApp', (req, res) => {
         error: 'an unexpected error occured'
       });
     });
+});
+
+app.post('/api/jokeApp/setlist', (req, res, next) => {
+  const { name, jokeId, totalMinutes } = req.body;
+  if (!name || !jokeId || !totalMinutes) {
+    res.status(400).json({
+      error: 'JokeId, name, and totalMinutes are required field'
+    });
+    return;
+  }
+  const userId = 1;
+  const sql = `
+  insert into "setlist" ("setlistName", "userId", "totalMinutes")
+  values ($1, $2, $3)
+  returning *
+  `;
+  const params = [name, userId, totalMinutes];
+  db.query(sql, params)
+    .then(results => {
+      const { rows: [newSetlist] } = results;
+      const params = [newSetlist.setlistId];
+      const jokeInserts = jokeId.map(id => {
+        params.push(id);
+        return `($1, $${params.length})`;
+      });
+      const jokeSql = `
+      insert into "setlistJokes"
+        ("setlistId", "jokeId")
+        values
+          ${jokeInserts.join(', ')}
+      `;
+      db.query(jokeSql, params)
+        .then(results => {
+          const [newSetlistJoke] = results.rows;
+          res.status(201).json(newSetlistJoke);
+        })
+        .catch(e => next(e));
+    })
+    .catch(e => next(e));
 });
 
 app.delete('/api/jokeApp', (req, res) => {
