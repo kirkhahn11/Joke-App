@@ -208,6 +208,36 @@ app.delete('/api/jokeApp', (req, res) => {
     });
 });
 
+app.delete('/api/jokeApp/setlist', (req, res, next) => {
+  const { setlistId } = req.body;
+  if (!setlistId) {
+    res.status(400).json({
+      error: 'setlistId is a required field'
+    });
+    return;
+  }
+  const sql = `
+  delete from "setlistJokes"
+  where "setlistId"=$1
+  returning *
+  `;
+  const params = [setlistId];
+  db.query(sql, params)
+    .then(results => {
+      const setlistSql = `
+      delete from "setlist"
+      where "setlistId"=$1
+      returning *
+      `;
+      db.query(setlistSql, params)
+        .then(results => {
+          res.status(201).json(results.rows);
+        })
+        .catch(e => next(e));
+    })
+    .catch(e => next(e));
+});
+
 app.patch('/api/jokeApp/:jokeId', (req, res) => {
   const { joke, title, approxMinutes, categoryId, jokeId } = req.body;
   if (!jokeId) {
