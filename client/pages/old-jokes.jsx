@@ -15,7 +15,8 @@ export default class OldJokes extends React.Component {
       setlistJokes: [],
       setlistJokelist: [],
       setlistName: '',
-      totalMinutes: 0
+      totalMinutes: 0,
+      isClickedInputs: {}
     };
     this.handleClick = this.handleClick.bind(this);
     this.renderJokeList = this.renderJokeList.bind(this);
@@ -28,13 +29,18 @@ export default class OldJokes extends React.Component {
     this.closeSetlistModal = this.closeSetlistModal.bind(this);
     this.handleChangeName = this.handleChangeName.bind(this);
     this.submitSetlist = this.submitSetlist.bind(this);
-    this.checkboxCheck = this.checkboxCheck.bind(this);
   }
 
   componentDidMount() {
     fetch('/api/jokeApp')
       .then(res => res.json())
-      .then(jokes => this.setState({ jokes }));
+      .then(jokes => {
+        const isClickedInputs = {};
+        for (let i = 0; i < jokes.length; i++) {
+          isClickedInputs[jokes[i].jokeId] = false;
+        }
+        this.setState({ jokes, isClickedInputs });
+      });
   }
 
   handleClick(event) {
@@ -106,6 +112,8 @@ export default class OldJokes extends React.Component {
 
   jokeSelect(event) {
     const setlistJokes = [...this.state.setlistJokes];
+    const checklist = this.state.isClickedInputs;
+    checklist[event.target.value] = !checklist[event.target.value];
     const setlistIndex = setlistJokes.indexOf(event.target.value);
     if (setlistJokes.length === 0) {
       setlistJokes.push(event.target.value);
@@ -114,7 +122,7 @@ export default class OldJokes extends React.Component {
     } else {
       setlistJokes.splice(setlistIndex, 1);
     }
-    this.setState({ setlistJokes: setlistJokes });
+    this.setState({ setlistJokes: setlistJokes, isClickedInputs: checklist });
   }
 
   handleChangeName(event) {
@@ -123,6 +131,10 @@ export default class OldJokes extends React.Component {
 
   submitSetlist(event) {
     event.preventDefault();
+    const jokelist = this.state.isClickedInputs;
+    for (const property in jokelist) {
+      jokelist[property] = false;
+    }
     const jokeIdArray = [];
     for (let i = 0; i < this.state.setlistJokelist.length; i++) {
       jokeIdArray.push(this.state.setlistJokelist[i].jokeId);
@@ -139,19 +151,7 @@ export default class OldJokes extends React.Component {
       },
       body: JSON.stringify(newSetlist)
     });
-    this.setState({ setlistName: '', totalMinutes: 0, setlistJokelist: [], setlistJokes: [], isClickedSetlist: false });
-  }
-
-  checkboxCheck(jokes) {
-    if (this.state.setlistJokes.length === 0) {
-      return (
-        <input className="form-check-input" checked={false} type="checkbox" onClick={this.jokeSelect} name="radioNoLabel" id="radioNoLabel1" value={jokes.jokeId} aria-label="..."></input>
-      );
-    } else {
-      return (
-        <input className="form-check-input" type="checkbox" onClick={this.jokeSelect} name="radioNoLabel" id="radioNoLabel1" value={jokes.jokeId} aria-label="..."></input>
-      );
-    }
+    this.setState({ setlistName: '', totalMinutes: 0, setlistJokelist: [], setlistJokes: [], isClickedSetlist: false, isClickedInputs: jokelist });
   }
 
   renderJokeList() {
@@ -160,7 +160,7 @@ export default class OldJokes extends React.Component {
           <div className="list-group-item list-group-item-action mb-1" key={jokes.jokeId} value={jokes.jokeId}>
             <div className="d-flex w-100">
               <div className="d-flex w-30">
-                {this.checkboxCheck(jokes)}
+              <input className="form-check-input" checked={this.state.isClickedInputs[jokes.jokeId]} type="checkbox" onChange={this.jokeSelect} name="radioNoLabel" value={jokes.jokeId} aria-label="..."></input>
                 <h5 className="ms-1">{jokes.title}</h5>
               </div>
               <div className="d-flex justify-content-between w-60 ms-4">
