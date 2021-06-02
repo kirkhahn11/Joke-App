@@ -32,7 +32,6 @@ CREATE TABLE "joke" (
 CREATE TABLE "setlist" (
     "setlistId" serial NOT NULL,
     "userId" integer NOT NULL,
-    "totalMinutes" integer NOT NULL,
     "setlistName" text NOT NULL,
     CONSTRAINT "setlist_pk" PRIMARY KEY ("setlistId")
 ) WITH (
