@@ -38,7 +38,7 @@ app.get('/api/jokeApp/setlists', (req, res, next) => {
   const userId = 1;
   const sql = `
   with jokes as (
-    select s."setlistId", array_to_json(array_agg(json_build_object('id', s."jokeId", 'title', s."title", 'approxMinutes', s."approxMinutes"))) as matching
+    select s."setlistId", array_to_json(array_agg(json_build_object('jokeId', s."jokeId", 'title', s."title", 'approxMinutes', s."approxMinutes"))) as matching
     from (
       select
         "sj"."setlistId",
@@ -147,7 +147,7 @@ app.post('/api/jokeApp/setlist', (req, res, next) => {
   const { name, jokeId } = req.body;
   if (!name || !jokeId) {
     res.status(400).json({
-      error: 'JokeId, name, and totalMinutes are required field'
+      error: 'JokeId and name are required field'
     });
     return;
   }
@@ -178,6 +178,33 @@ app.post('/api/jokeApp/setlist', (req, res, next) => {
           res.status(201).json(newSetlistJoke);
         })
         .catch(e => next(e));
+    })
+    .catch(e => next(e));
+});
+
+app.post('/api/jokeApp/setlistJokes', (req, res, next) => {
+  const { setlistId, jokeId } = req.body;
+  if (!setlistId || !jokeId) {
+    res.status(400).json({
+      error: 'JokeId and setlistId are required field'
+    });
+    return;
+  }
+  const params = [setlistId];
+  const jokeInserts = jokeId.map(id => {
+    params.push(id);
+    return `($1, $${params.length})`;
+  });
+  const setlistSql = `
+      insert into "setlistJokes"
+        ("setlistId", "jokeId")
+        values
+          ${jokeInserts.join(', ')}
+      `;
+  db.query(setlistSql, params)
+    .then(results => {
+      const [updatedSetlist] = results.rows;
+      res.status(201).json(updatedSetlist);
     })
     .catch(e => next(e));
 });

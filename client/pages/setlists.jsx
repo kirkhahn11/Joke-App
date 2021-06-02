@@ -24,6 +24,7 @@ export default class Setlists extends React.Component {
     this.totalMinutes = this.totalMinutes.bind(this);
     this.editModal = this.editModal.bind(this);
     this.deleteJoke = this.deleteJoke.bind(this);
+    this.addJoke = this.addJoke.bind(this);
   }
 
   componentDidMount() {
@@ -102,7 +103,7 @@ export default class Setlists extends React.Component {
       }
     }
     for (let i = 0; i < deleteJoke.jokes.length; i++) {
-      if (deleteJoke.jokes[i].id.toString() === event.target.value.toString()) {
+      if (deleteJoke.jokes[i].jokeId.toString() === event.target.value.toString()) {
         deleteJoke.jokes.splice(i, 1);
       }
     }
@@ -128,6 +129,36 @@ export default class Setlists extends React.Component {
       });
   }
 
+  addJoke(jokeId, setlistId, jokesAdded) {
+    const setlistClone = [...this.state.setlists];
+    let changedSetlist;
+    for (let i = 0; i < setlistClone.length; i++) {
+      if (setlistClone[i].setlistId === setlistId) {
+        changedSetlist = this.state.setlists[i];
+      }
+    }
+    for (let i = 0; i < jokesAdded.length; i++) {
+      changedSetlist.jokes.push(jokesAdded[i]);
+    }
+    for (let i = 0; i < setlistClone.length; i++) {
+      if (setlistClone[i].setlistId === setlistId) {
+        setlistClone.splice(i, 1, changedSetlist);
+      }
+    }
+    const setlistJoke = {
+      jokeId: jokeId,
+      setlistId: setlistId
+    };
+    fetch('/api/jokeApp/setlistJokes', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(setlistJoke)
+    });
+    this.setState({ isClickedEdit: false, editedSetlist: '', setlist: setlistClone });
+  }
+
   renderSetlist() {
     return (
       this.state.setlists.map(setlist =>
@@ -147,9 +178,9 @@ export default class Setlists extends React.Component {
                   <button type="button" className="btn btn-link link-danger fb-30" onClick={this.deleteModal} value={setlist.setlistId}>Delete Setlist</button>
                 </div>
                 {setlist.jokes.map(jokes =>
-                  <div key={jokes.id} className='d-flex align-items-center'>
+                  <div key={jokes.jokeId} className='d-flex align-items-center'>
                     <h6 className='mb-0 fb-30'>{jokes.title}</h6>
-                    <button type="button" className="btn btn-link link-danger" onClick={this.deleteJoke} name={setlist.setlistId} value={jokes.id}>Delete Joke</button>
+                    <button type="button" className="btn btn-link link-danger" onClick={this.deleteJoke} name={setlist.setlistId} value={jokes.jokeId}>Delete Joke</button>
                   </div>
                 )}
                 <div className="text-center">
@@ -192,12 +223,7 @@ export default class Setlists extends React.Component {
                   <h5 className="modal-title">{`Edit ${this.state.editedSetlist.setlistName}`}</h5>
                   <button type="button" className="btn-close" aria-label="Close" onClick={this.closeModalEdit}></button>
                 </div>
-                <div className="modal-body">
-                  <EditSetlistForm setlist={this.state.editedSetlist} />
-                </div>
-                <div className="text-center mb-2">
-                  <button type="button" className="btn btn-primary text-center" onClick={this.deleteSetlist}>Confirm Jokes</button>
-                </div>
+                  <EditSetlistForm setlist={this.state.editedSetlist} onSubmit={this.addJoke}/>
               </div>
             </div>
           </div>
