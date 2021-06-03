@@ -5,7 +5,7 @@ drop schema "public" cascade;
 create schema "public";
 CREATE TABLE "Users" (
     "usersId" serial NOT NULL,
-    "email" text NOT NULL,
+    "username" text NOT NULL,
     "password" text NOT NULL,
     CONSTRAINT "Users_pk" PRIMARY KEY ("usersId")
 ) WITH (

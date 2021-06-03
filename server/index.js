@@ -1,7 +1,8 @@
 require('dotenv/config');
 const express = require('express');
+const argon2 = require('argon2');
 const db = require('./db');
-// const ClientError = require('./client-error');
+const ClientError = require('./client-error');
 // const jwt = require('jsonwebtoken');
 const errorMiddleware = require('./error-middleware');
 const staticMiddleware = require('./static-middleware');
@@ -11,6 +12,31 @@ const app = express();
 app.use(staticMiddleware);
 
 app.use(express.json());
+
+app.post('/api/jokeApp/sign-up', (req, res, next) => {
+  const { username, password } = req.body;
+  if (!username || !password) {
+    throw new ClientError(400, 'username and password are required fields');
+  }
+
+  argon2
+    .hash(password)
+    .then(hashedPassword => {
+      const sql = `
+  insert into "Users" ("username", "password")
+  values ($1, $2)
+  returning "usersId"
+  `;
+      const params = [username, hashedPassword];
+
+      db.query(sql, params)
+        .then(result => {
+          const [newRow] = result.rows;
+          res.json(newRow);
+        })
+        .catch(err => next(err));
+    });
+});
 
 app.get('/api/jokeApp/categories', (req, res, next) => {
   const sql = `

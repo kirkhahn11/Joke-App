@@ -162,3 +162,15 @@ h1 {
 .fb-75 {
   flex-basis: 75%;
 }
+
+.w-35 {
+  width: 35%;
+}
+
+.lh-37 {
+  line-height: 37px;
+}
+
+.h-50 {
+  height: 50%;
+}
