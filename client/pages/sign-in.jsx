@@ -41,8 +41,10 @@ export default class SignIn extends React.Component {
       body: JSON.stringify(newUser)
     })
       .then(res => res.json())
-      .then(data => {
+      .then(user => {
         this.setState({ password: '', username: '' });
+        window.localStorage.setItem('joke-app-jwt', user.token);
+        window.localStorage.setItem('joke-app-user', user.user.usersId);
         window.location.hash = '#addJokes';
       });
 

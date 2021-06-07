@@ -3,9 +3,10 @@ const express = require('express');
 const argon2 = require('argon2');
 const db = require('./db');
 const ClientError = require('./client-error');
-// const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 const errorMiddleware = require('./error-middleware');
 const staticMiddleware = require('./static-middleware');
+const authorizationMiddleware = require('./authorization-middleware');
 
 const app = express();
 
@@ -25,43 +26,53 @@ app.post('/api/jokeApp/sign-up', (req, res, next) => {
       const sql = `
   insert into "Users" ("username", "password")
   values ($1, $2)
-  returning "usersId"
+  returning "usersId", "username"
   `;
       const params = [username, hashedPassword];
 
       db.query(sql, params)
         .then(result => {
-          const [newRow] = result.rows;
-          res.json(newRow);
+          const [user] = result.rows;
+          const { usersId, username } = user;
+          const payload = { usersId, username };
+          const token = jwt.sign(payload, process.env.TOKEN_SECRET);
+          res.json({ token, user: payload });
         })
         .catch(err => next(err));
     });
 });
 
+app.use(authorizationMiddleware);
+
 app.get('/api/jokeApp/categories', (req, res, next) => {
+  const { usersId } = req.user;
   const sql = `
-  select "name",
-         "categoryId"
-    from "category"
+  select "categoryId", "name"
+  from "category"
+  where "userId" = $1
     `;
-  db.query(sql)
+  const params = [usersId];
+  db.query(sql, params)
     .then(result => res.json(result.rows))
     .catch(err => next(err));
 });
 
 app.get('/api/jokeApp', (req, res, next) => {
+  const { usersId } = req.user;
   const sql = `
   select *, "c"."name"
-  from "joke"
+  from "joke" as "j"
   join "category" as "c" using ("categoryId")
+  where "j"."userId" = $1
   `;
-  db.query(sql)
+  const params = [usersId];
+  db.query(sql, params)
     .then(result => res.json(result.rows))
     .catch(err => next(err));
 });
 
 app.get('/api/jokeApp/setlists', (req, res, next) => {
-  const userId = 1;
+  const { usersId } = req.user;
   const sql = `
   with jokes as (
     select s."setlistId", array_to_json(array_agg(json_build_object('jokeId', s."jokeId", 'title', s."title", 'approxMinutes', s."approxMinutes"))) as matching
@@ -85,35 +96,14 @@ app.get('/api/jokeApp/setlists', (req, res, next) => {
       from "setlist" as "sl"
       where "sl"."userId" = $1;
   `;
-  const params = [userId];
+  const params = [usersId];
   db.query(sql, params)
     .then(results => res.json(results.rows))
     .catch(err => next(err));
 });
 
-app.post('/api/jokeApp/signIn', (req, res, next) => {
-  const { email, password } = req.body;
-  if (!email || !password) {
-    res.status(400).json({
-      error: 'Email and Password are required fields'
-    });
-    return;
-  }
-  const sql = `
-  insert into "Users" ("email", "password")
-  values ($1, $2)
-  returning *
-  `;
-  const params = [email, password];
-  db.query(sql, params)
-    .then(results => {
-      const [user] = results.rows;
-      res.status(201).json(user);
-    })
-    .catch(err => next(err));
-});
-
 app.post('/api/jokeApp/category', (req, res) => {
+  const { usersId } = req.user;
   const { category } = req.body;
   if (!category) {
     res.status(400).json({
@@ -122,11 +112,11 @@ app.post('/api/jokeApp/category', (req, res) => {
     return;
   }
   const sql = `
-  insert into "category" ("name")
-  values ($1)
+  insert into "category" ("name", "userId")
+  values ($1, $2)
   returning *
   `;
-  const params = [category];
+  const params = [category, usersId];
   db.query(sql, params)
     .then(results => {
       const [category] = results.rows;
@@ -142,7 +132,7 @@ app.post('/api/jokeApp/category', (req, res) => {
 
 app.post('/api/jokeApp', (req, res) => {
   const { joke, title, categoryId } = req.body;
-  const userId = 1;
+  const { usersId } = req.user;
   const approxMinutes = 0;
   if (!joke || !title) {
     res.status(400).json({
@@ -155,7 +145,7 @@ app.post('/api/jokeApp', (req, res) => {
   values ($1, $2, $3, $4, $5)
   returning *
   `;
-  const params = [categoryId, userId, title, approxMinutes, joke];
+  const params = [categoryId, usersId, title, approxMinutes, joke];
   db.query(sql, params)
     .then(results => {
       const [newJoke] = results.rows;
@@ -171,19 +161,19 @@ app.post('/api/jokeApp', (req, res) => {
 
 app.post('/api/jokeApp/setlist', (req, res, next) => {
   const { name, jokeId } = req.body;
+  const { usersId } = req.user;
   if (!name || !jokeId) {
     res.status(400).json({
       error: 'JokeId and name are required field'
     });
     return;
   }
-  const userId = 1;
   const sql = `
   insert into "setlist" ("setlistName", "userId")
   values ($1, $2)
   returning *
   `;
-  const params = [name, userId];
+  const params = [name, usersId];
   db.query(sql, params)
     .then(results => {
       const { rows: [newSetlist] } = results;

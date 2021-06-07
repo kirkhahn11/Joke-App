@@ -8,7 +8,9 @@ export default class EditJokeForm extends React.Component {
       title: '',
       approxMinutes: '',
       categoryId: '',
-      categories: []
+      categories: [],
+      token: '',
+      userId: ''
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -17,9 +19,17 @@ export default class EditJokeForm extends React.Component {
   }
 
   componentDidMount() {
-    fetch('/api/jokeApp/categories')
+    const token = localStorage.getItem('joke-app-jwt');
+    const userId = localStorage.getItem('joke-app-user');
+    fetch('/api/jokeApp/categories', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-access-token': token
+      }
+    })
       .then(res => res.json())
-      .then(categories => this.setState({ categories }));
+      .then(categories => this.setState({ categories, token, userId }));
   }
 
   handleChange(event) {
@@ -79,13 +89,15 @@ export default class EditJokeForm extends React.Component {
       title: title,
       categoryId: categoryId,
       jokeId: this.props.jokes.jokeId,
-      name: name
+      name: name,
+      userId: this.state.userId
     };
     this.props.onSubmit(editedJoke);
     fetch(`/api/jokeApp/${this.props.jokes.jokeId}`, {
       method: 'PATCH',
       headers: {
-        'Content-type': 'application/json'
+        'Content-type': 'application/json',
+        'X-access-token': this.state.token
       },
       body: JSON.stringify(editedJoke)
     })

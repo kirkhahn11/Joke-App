@@ -14,6 +14,7 @@ CREATE TABLE "Users" (
 CREATE TABLE "category" (
     "categoryId" serial NOT NULL,
     "name" text NOT NULL,
+    "userId" integer NOT NULL,
     CONSTRAINT "category_pk" PRIMARY KEY ("categoryId")
 ) WITH (
   OIDS=FALSE
