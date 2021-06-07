@@ -11,6 +11,7 @@ export default class SignIn extends React.Component {
     this.handleClick = this.handleClick.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.signUp = this.signUp.bind(this);
+    this.signIn = this.signIn.bind(this);
   }
 
   handleClick(event) {
@@ -44,10 +45,34 @@ export default class SignIn extends React.Component {
       .then(user => {
         this.setState({ password: '', username: '' });
         window.localStorage.setItem('joke-app-jwt', user.token);
-        window.localStorage.setItem('joke-app-user', user.user.usersId);
         window.location.hash = '#addJokes';
       });
+  }
 
+  signIn(event) {
+    event.preventDefault();
+    const user = {
+      username: this.state.username,
+      unverifiedPassword: this.state.password
+    };
+    fetch('/api/jokeApp/sign-in', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(user)
+    })
+      .then(res => res.json())
+      .then(user => {
+        if (!user.error) {
+          this.setState({ password: '', username: '' });
+          window.localStorage.setItem('joke-app-jwt', user.token);
+          window.location.hash = '#addJokes';
+        } else {
+          window.alert(user.error);
+          this.setState({ password: '', username: '' });
+        }
+      });
   }
 
   render() {
@@ -79,7 +104,7 @@ export default class SignIn extends React.Component {
                     <input type='password' name='password' className="form-control" onChange={this.handleChange} value={this.state.password}></input>
                   </div>
                 </div>
-                <button type="submit" className="btn btn-primary m-auto mt-1" onClick={this.setlistModal}>Sign In</button>
+                <button type="submit" className="btn btn-primary m-auto mt-1" onClick={this.signIn}>Sign In</button>
               </div>
                 <div className={`${this.state.isClicked ? '' : 'hidden'}`}>
                   <div className="mb-3 row mt-5">

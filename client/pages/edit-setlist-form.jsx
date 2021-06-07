@@ -6,8 +6,7 @@ export default class EditSetlistForm extends React.Component {
     this.state = {
       jokes: [],
       isClickedInputs: {},
-      setlistJokes: [],
-      token: ''
+      setlistJokes: []
     };
     this.renderJokelist = this.renderJokelist.bind(this);
     this.jokeSelect = this.jokeSelect.bind(this);
@@ -29,7 +28,7 @@ export default class EditSetlistForm extends React.Component {
         for (let i = 0; i < jokes.length; i++) {
           isClickedInputs[jokes[i].jokeId] = false;
         }
-        this.setState({ jokes, isClickedInputs, token });
+        this.setState({ jokes, isClickedInputs });
       });
   }
 

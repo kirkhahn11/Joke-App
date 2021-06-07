@@ -29,7 +29,6 @@ app.post('/api/jokeApp/sign-up', (req, res, next) => {
   returning "usersId", "username"
   `;
       const params = [username, hashedPassword];
-
       db.query(sql, params)
         .then(result => {
           const [user] = result.rows;
@@ -40,6 +39,39 @@ app.post('/api/jokeApp/sign-up', (req, res, next) => {
         })
         .catch(err => next(err));
     });
+});
+
+app.post('/api/jokeApp/sign-in', (req, res, next) => {
+  const { username, unverifiedPassword } = req.body;
+  if (!username || !unverifiedPassword) {
+    throw new ClientError(401, 'invalid login');
+  }
+  const sql = `
+    select "usersId",
+           "password"
+      from "Users"
+     where "username" = $1
+  `;
+  const params = [username];
+  db.query(sql, params)
+    .then(result => {
+      const [user] = result.rows;
+      if (!user) {
+        throw new ClientError(401, 'invalid login');
+      }
+      const { usersId, password } = user;
+      return argon2
+        .verify(password, unverifiedPassword)
+        .then(isMatching => {
+          if (!isMatching) {
+            throw new ClientError(401, 'invalid login');
+          }
+          const payload = { usersId, username };
+          const token = jwt.sign(payload, process.env.TOKEN_SECRET);
+          res.json({ token, user: payload });
+        });
+    })
+    .catch(err => next(err));
 });
 
 app.use(authorizationMiddleware);

@@ -11,8 +11,7 @@ export default class AddJoke extends React.Component {
       categories: [],
       modalHidden: false,
       textDisabled: true,
-      categoryId: '',
-      token: ''
+      categoryId: ''
     };
     this.handleChangeJoke = this.handleChangeJoke.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -49,6 +48,7 @@ export default class AddJoke extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
+    const token = localStorage.getItem('joke-app-jwt');
     const newJoke = {
       joke: this.state.joke,
       title: this.state.title,
@@ -58,7 +58,7 @@ export default class AddJoke extends React.Component {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-access-token': this.state.token
+        'X-access-token': token
       },
       body: JSON.stringify(newJoke)
     })
@@ -73,12 +73,13 @@ export default class AddJoke extends React.Component {
   }
 
   addCategory(category) {
+    const token = localStorage.getItem('joke-app-jwt');
     const categoryList = [...this.state.categories];
     fetch('/api/jokeApp/category', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-access-token': this.state.token
+        'X-access-token': token
       },
       body: JSON.stringify({ category: category })
     })
