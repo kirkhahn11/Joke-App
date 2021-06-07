@@ -11,7 +11,8 @@ export default class AddJoke extends React.Component {
       categories: [],
       modalHidden: false,
       textDisabled: true,
-      categoryId: ''
+      categoryId: '',
+      token: ''
     };
     this.handleChangeJoke = this.handleChangeJoke.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -26,9 +27,16 @@ export default class AddJoke extends React.Component {
   }
 
   componentDidMount() {
-    fetch('/api/jokeApp/categories')
+    const token = localStorage.getItem('joke-app-jwt');
+    fetch('/api/jokeApp/categories', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-access-token': token
+      }
+    })
       .then(res => res.json())
-      .then(categories => this.setState({ categories, joke: '', title: '' }));
+      .then(categories => this.setState({ categories, token, joke: '', title: '' }));
   }
 
   handleChangeJoke(event) {
@@ -49,7 +57,8 @@ export default class AddJoke extends React.Component {
     fetch('/api/jokeApp', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'X-access-token': this.state.token
       },
       body: JSON.stringify(newJoke)
     })
@@ -68,7 +77,8 @@ export default class AddJoke extends React.Component {
     fetch('/api/jokeApp/category', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'X-access-token': this.state.token
       },
       body: JSON.stringify({ category: category })
     })

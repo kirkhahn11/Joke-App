@@ -6,7 +6,8 @@ export default class EditSetlistForm extends React.Component {
     this.state = {
       jokes: [],
       isClickedInputs: {},
-      setlistJokes: []
+      setlistJokes: [],
+      token: ''
     };
     this.renderJokelist = this.renderJokelist.bind(this);
     this.jokeSelect = this.jokeSelect.bind(this);
@@ -14,14 +15,21 @@ export default class EditSetlistForm extends React.Component {
   }
 
   componentDidMount() {
-    fetch('/api/jokeApp')
+    const token = localStorage.getItem('joke-app-jwt');
+    fetch('/api/jokeApp', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-access-token': token
+      }
+    })
       .then(res => res.json())
       .then(jokes => {
         const isClickedInputs = {};
         for (let i = 0; i < jokes.length; i++) {
           isClickedInputs[jokes[i].jokeId] = false;
         }
-        this.setState({ jokes, isClickedInputs });
+        this.setState({ jokes, isClickedInputs, token });
       });
   }
 
