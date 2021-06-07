@@ -16,8 +16,7 @@ export default class OldJokes extends React.Component {
       setlistJokelist: [],
       setlistName: '',
       totalMinutes: 0,
-      isClickedInputs: {},
-      token: ''
+      isClickedInputs: {}
     };
     this.handleClick = this.handleClick.bind(this);
     this.renderJokeList = this.renderJokeList.bind(this);
@@ -47,7 +46,7 @@ export default class OldJokes extends React.Component {
         for (let i = 0; i < jokes.length; i++) {
           isClickedInputs[jokes[i].jokeId] = false;
         }
-        this.setState({ jokes, isClickedInputs, token });
+        this.setState({ jokes, isClickedInputs });
       });
   }
 
@@ -56,6 +55,7 @@ export default class OldJokes extends React.Component {
   }
 
   deleteJoke(event) {
+    const token = localStorage.getItem('joke-app-jwt');
     const jokeList = [...this.state.jokes];
     const jokeId = {
       jokeId: event.target.value
@@ -64,7 +64,7 @@ export default class OldJokes extends React.Component {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
-        'X-access-token': this.state.token
+        'X-access-token': token
       },
       body: JSON.stringify(jokeId)
     })
@@ -140,6 +140,7 @@ export default class OldJokes extends React.Component {
 
   submitSetlist(event) {
     event.preventDefault();
+    const token = localStorage.getItem('joke-app-jwt');
     const jokelist = this.state.isClickedInputs;
     for (const property in jokelist) {
       jokelist[property] = false;
@@ -157,7 +158,7 @@ export default class OldJokes extends React.Component {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-access-token': this.state.token
+        'X-access-token': token
       },
       body: JSON.stringify(newSetlist)
     });

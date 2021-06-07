@@ -8,9 +8,7 @@ export default class EditJokeForm extends React.Component {
       title: '',
       approxMinutes: '',
       categoryId: '',
-      categories: [],
-      token: '',
-      userId: ''
+      categories: []
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -20,7 +18,6 @@ export default class EditJokeForm extends React.Component {
 
   componentDidMount() {
     const token = localStorage.getItem('joke-app-jwt');
-    const userId = localStorage.getItem('joke-app-user');
     fetch('/api/jokeApp/categories', {
       method: 'GET',
       headers: {
@@ -29,7 +26,7 @@ export default class EditJokeForm extends React.Component {
       }
     })
       .then(res => res.json())
-      .then(categories => this.setState({ categories, token, userId }));
+      .then(categories => this.setState({ categories }));
   }
 
   handleChange(event) {
@@ -61,6 +58,7 @@ export default class EditJokeForm extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
+    const token = localStorage.getItem('joke-app-jwt');
     let joke = this.props.jokes.joke;
     let approxMinutes = this.props.jokes.approxMinutes;
     let title = this.props.jokes.title;
@@ -89,15 +87,14 @@ export default class EditJokeForm extends React.Component {
       title: title,
       categoryId: categoryId,
       jokeId: this.props.jokes.jokeId,
-      name: name,
-      userId: this.state.userId
+      name: name
     };
     this.props.onSubmit(editedJoke);
     fetch(`/api/jokeApp/${this.props.jokes.jokeId}`, {
       method: 'PATCH',
       headers: {
         'Content-type': 'application/json',
-        'X-access-token': this.state.token
+        'X-access-token': token
       },
       body: JSON.stringify(editedJoke)
     })

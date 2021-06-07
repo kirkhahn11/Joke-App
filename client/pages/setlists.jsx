@@ -13,8 +13,7 @@ export default class Setlists extends React.Component {
       isClickedEdit: false,
       deleteSetlist: '',
       editedSetlist: '',
-      totalMinutes: [],
-      token: ''
+      totalMinutes: []
     };
     this.handleClick = this.handleClick.bind(this);
     this.renderSetlist = this.renderSetlist.bind(this);
@@ -39,7 +38,7 @@ export default class Setlists extends React.Component {
     })
       .then(res => res.json())
       .then(setlists =>
-        this.setState({ setlists, token })
+        this.setState({ setlists })
       );
   }
 
@@ -80,6 +79,7 @@ export default class Setlists extends React.Component {
   }
 
   deleteSetlist() {
+    const token = localStorage.getItem('joke-app-jwt');
     const setlists = [...this.state.setlists];
     const setlistId = {
       setlistId: this.state.deleteSetlist.setlistId
@@ -88,7 +88,7 @@ export default class Setlists extends React.Component {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
-        'X-access-token': this.state.token
+        'X-access-token': token
       },
       body: JSON.stringify(setlistId)
     })
@@ -104,6 +104,7 @@ export default class Setlists extends React.Component {
   }
 
   deleteJoke(event) {
+    const token = localStorage.getItem('joke-app-jwt');
     const setlists = [...this.state.setlists];
     let deleteJoke;
     for (let i = 0; i < this.state.setlists.length; i++) {
@@ -129,7 +130,7 @@ export default class Setlists extends React.Component {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
-        'X-access-token': this.state.token
+        'X-access-token': token
       },
       body: JSON.stringify(jokeId)
     })
@@ -140,6 +141,7 @@ export default class Setlists extends React.Component {
   }
 
   addJoke(jokeId, setlistId, jokesAdded) {
+    const token = localStorage.getItem('joke-app-jwt');
     const setlistClone = [...this.state.setlists];
     let changedSetlist;
     for (let i = 0; i < setlistClone.length; i++) {
@@ -163,7 +165,7 @@ export default class Setlists extends React.Component {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-access-token': this.state.token
+        'X-access-token': token
       },
       body: JSON.stringify(setlistJoke)
     });
