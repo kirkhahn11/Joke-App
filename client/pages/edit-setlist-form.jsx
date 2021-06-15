@@ -108,7 +108,7 @@ export default class EditSetlistForm extends React.Component {
             {this.renderJokelist()}
           </div>
           <div className="text-center mb-2">
-            <button type="button" className="btn btn-primary text-center" onClick={this.addJoke}>Confirm Jokes</button>
+            <button type="button" className={`${this.state.setlistJokes.length !== 0 ? 'btn btn-primary text-center' : 'visually-hidden'}`} onClick={this.addJoke}>Confirm Jokes</button>
           </div>
         </div >
     );

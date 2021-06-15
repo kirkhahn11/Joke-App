@@ -11,7 +11,8 @@ export default class AddJoke extends React.Component {
       categories: [],
       modalHidden: false,
       textDisabled: true,
-      categoryId: ''
+      categoryId: '',
+      isClickedSuccess: false
     };
     this.handleChangeJoke = this.handleChangeJoke.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -23,6 +24,7 @@ export default class AddJoke extends React.Component {
     this.textBoxDisabled = this.textBoxDisabled.bind(this);
     this.categorySelect = this.categorySelect.bind(this);
     this.onClickModalClose = this.onClickModalClose.bind(this);
+    this.closeSuccessModal = this.closeSuccessModal.bind(this);
   }
 
   componentDidMount() {
@@ -64,7 +66,8 @@ export default class AddJoke extends React.Component {
     })
       .then(res => res.json())
       .then(data => {
-        this.setState({ joke: '', title: '' });
+
+        this.setState({ joke: '', title: '', categoryId: '', textDisabled: true, isClickedSuccess: true });
       });
   }
 
@@ -95,8 +98,8 @@ export default class AddJoke extends React.Component {
   }
 
   categorySelect(event) {
-    if (event.target.value === '') {
-      this.setState({ textDisabled: true });
+    if (event.target.value === 'DEFAULT') {
+      this.setState({ textDisabled: true, categoryId: '' });
 
     } else {
       this.setState({ textDisabled: false, categoryId: event.target.value });
@@ -112,7 +115,7 @@ export default class AddJoke extends React.Component {
       return (
         <div className="mb-3">
           <input disabled type="text" className="form-control" placeholder="Select A Category" aria-label="Title" aria-describedby="basic-addon1" onChange={this.handleChangeTitle} value={this.state.title}></input>
-          <textarea disabled className="form-control mt-1" id="exampleFormControlTextarea1" rows="3" onChange={this.handleChangeJoke} placeholder='Please Select a Category'></textarea>;
+          <textarea disabled className="form-control mt-1" id="exampleFormControlTextarea1" rows="3" onChange={this.handleChangeJoke} placeholder='Please Select a Category' value={this.state.joke}></textarea>;
         </div>
       );
     } else {
@@ -125,15 +128,20 @@ export default class AddJoke extends React.Component {
     }
   }
 
+  closeSuccessModal() {
+    this.setState({ isClickedSuccess: false });
+  }
+
   categoryList() {
+    const currentValue = this.state.categoryId;
     const listCategories = this.state.categories.map(categories =>
       <option key={categories.categoryId} value={categories.categoryId}>
         {categories.name}
       </option>
     );
     return (
-      <select className="form-select" aria-label="Default select example" name="category" onChange={this.categorySelect}>
-        <option value="">Choose A Category</option>
+      <select className="form-select" value={`${currentValue === '' ? 'DEFAULT' : currentValue}`} aria-label="Default select example" name="category" onChange={this.categorySelect}>
+        <option value="DEFAULT">Choose A Category</option>
         {listCategories}
       </select>
     );
@@ -141,9 +149,8 @@ export default class AddJoke extends React.Component {
 
   render() {
     return (
-      <div className={`${this.state.isClicked ? 'container1-is-active' : 'container1'}`}>
+      <>
         <div className="header">
-          <i className="bi bi-list" id="hamburger-button" onClick={this.handleClick}></i>
           <h1>New Joke</h1>
         </div>
         <div id="joke-container">
@@ -167,7 +174,19 @@ export default class AddJoke extends React.Component {
             <CategoryForm onSubmit={this.addCategory} />
           </div>
         </div>
-      </div>
+        <div className={this.state.isClickedSuccess ? 'modal-is-active' : 'modal'} tabIndex="-1">
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Joke Saved Successfully</h5>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-primary" onClick={this.closeSuccessModal} data-bs-dismiss="modal">OK</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </>
     );
   }
 }

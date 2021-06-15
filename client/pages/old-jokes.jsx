@@ -6,7 +6,7 @@ export default class OldJokes extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      jokes: [],
+      jokes: '',
       editedJoke: [],
       targetId: '',
       isClicked: false,
@@ -16,7 +16,8 @@ export default class OldJokes extends React.Component {
       setlistJokelist: [],
       setlistName: '',
       totalMinutes: 0,
-      isClickedInputs: {}
+      isClickedInputs: {},
+      isClickedSuccess: false
     };
     this.handleClick = this.handleClick.bind(this);
     this.renderJokeList = this.renderJokeList.bind(this);
@@ -29,6 +30,7 @@ export default class OldJokes extends React.Component {
     this.closeSetlistModal = this.closeSetlistModal.bind(this);
     this.handleChangeName = this.handleChangeName.bind(this);
     this.submitSetlist = this.submitSetlist.bind(this);
+    this.confirmClose = this.confirmClose.bind(this);
   }
 
   componentDidMount() {
@@ -162,16 +164,25 @@ export default class OldJokes extends React.Component {
       },
       body: JSON.stringify(newSetlist)
     });
-    this.setState({ setlistName: '', totalMinutes: 0, setlistJokelist: [], setlistJokes: [], isClickedSetlist: false, isClickedInputs: jokelist });
+    this.setState({ setlistName: '', totalMinutes: 0, setlistJokelist: [], setlistJokes: [], isClickedSetlist: false, isClickedInputs: jokelist, isClickedSuccess: true });
+  }
+
+  confirmClose() {
+    this.setState({ isClickedSuccess: false });
   }
 
   renderJokeList() {
-    return (
-      this.state.jokes.map(jokes =>
+    if (this.state.jokes.length === 0) {
+      return (
+        <h1>No Jokes Yet! Go to New Jokes page to get started!</h1>
+      );
+    } else {
+      return (
+        this.state.jokes.map(jokes =>
           <div className="list-group-item list-group-item-action mb-1" key={jokes.jokeId} value={jokes.jokeId}>
             <div className="d-flex w-100">
               <div className="d-flex w-30">
-              <input className="form-check-input" checked={this.state.isClickedInputs[jokes.jokeId]} type="checkbox" onChange={this.jokeSelect} name="radioNoLabel" value={jokes.jokeId} aria-label="..."></input>
+                <input className="form-check-input" checked={this.state.isClickedInputs[jokes.jokeId]} type="checkbox" onChange={this.jokeSelect} name="radioNoLabel" value={jokes.jokeId} aria-label="..."></input>
                 <h5 className="ms-1">{jokes.title}</h5>
               </div>
               <div className="d-flex justify-content-between w-60 ms-4">
@@ -181,24 +192,24 @@ export default class OldJokes extends React.Component {
                   <button className="btn btn-link" type="button" onClick={this.editModal} value={jokes.jokeId}>Edit</button>
                   <button type="button" className="btn btn-link link-danger" onClick={this.deleteJoke} value={jokes.jokeId}>Delete</button>
                 </div>
-            </div>
+              </div>
             </div>
             <p>{jokes.joke}</p>
           </div>
-      )
-    );
+        )
+      );
+    }
   }
 
   render() {
     return (
-      <div className={`${this.state.isClicked ? 'container1-is-active' : 'container1'}`}>
+      <>
         <div className="header">
-          <i className="bi bi-list" id="hamburger-button" onClick={this.handleClick}></i>
           <h1>Joke List</h1>
         </div>
         <div className="list-group m-auto mt-1 w-75">
-              {this.renderJokeList()}
-            <button type="submit" className="btn btn-primary w-25 m-auto mt-1" onClick={this.setlistModal}>Create Setlist</button>
+          {this.renderJokeList()}
+          <button type="submit" className={`${this.state.setlistJokes.length === 0 ? 'visually-hidden' : 'btn btn-primary w-25 m-auto mt-1'}`} onClick={this.setlistModal}>Create Setlist</button>
         </div>
           <div className={this.state.isClickedEdit ? 'modal-is-active' : 'modal'}tabIndex="-1">
             <div className="modal-dialog modal-xl">
@@ -227,11 +238,23 @@ export default class OldJokes extends React.Component {
               <div className='text-center mt-1'>
                 <h6>Total Minutes: {this.state.totalMinutes}</h6>
               </div>
-               <button type="button" className="btn btn-primary btn-large w-50 m-auto mt-1 mb-1" onClick={this.submitSetlist}>Confirm Setlist</button>
+               <button type="button" className='btn btn-primary btn-large w-50 m-auto mt-1 mb-1' onClick={this.submitSetlist}>Confirm Setlist</button>
             </div>
           </div>
         </div>
-      </div>
+        <div className={this.state.isClickedSuccess ? 'modal-is-active' : 'modal'} tabIndex="-1">
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Setlist Saved Successfully</h5>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-primary" onClick={this.confirmClose} data-bs-dismiss="modal">OK</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </>
     );
   }
 }

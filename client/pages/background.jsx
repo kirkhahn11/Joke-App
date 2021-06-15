@@ -30,20 +30,20 @@ export default class Background extends React.Component {
     window.localStorage.removeItem('joke-app-jwt');
   }
 
-  render(props) {
+  render() {
     return (
-      <div className="container-fluid background-fixed">
-        <div className="btn-group-vertical gap-3 mt-3">
-          <a href='#addJokes'>
+      <div className="background-fixed">
+        <div className="btn-group-vertical gap-3 mt-3 w-inherit">
+          <a href='#addJokes' className='w-inherit'>
             <button className={this.newJokeColor()}>New Joke</button>
           </a>
-          <a href='#oldJokes'>
-           <button className={this.oldJokesColor()}>Old Jokes</button>
+          <a href='#oldJokes' className='w-inherit'>
+            <button className={this.oldJokesColor()}>Old Jokes</button>
           </a>
-          <a href='#setlists'>
-           <button className={this.setlistColor()}>Setlists</button>
+          <a href='#setlists' className='w-inherit'>
+            <button className={this.setlistColor()}>Setlists</button>
           </a>
-          <a href='' onClick={this.handleSignOut}>
+          <a href='' className='w-inherit' onClick={this.handleSignOut}>
             <button className='back-btn btn-light'>Sign Out</button>
           </a>
         </div>
