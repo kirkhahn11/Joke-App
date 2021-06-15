@@ -173,8 +173,13 @@ export default class Setlists extends React.Component {
   }
 
   renderSetlist() {
-    return (
-      this.state.setlists.map(setlist =>
+    if (this.state.setlists.length === 0) {
+      return (
+        <h1>No Setlists Yet! Go to Old Jokes page to get started!</h1>
+      );
+    } else {
+      return (
+        this.state.setlists.map(setlist =>
           <div className="accordion-item" key={setlist.setlistId}>
             <h2 className="accordion-header" id="flush-headingOne">
             <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target={`#flush-collapseOne${setlist.setlistId}`} aria-expanded="false" aria-controls="flush-collapseOne">
@@ -202,15 +207,15 @@ export default class Setlists extends React.Component {
               </div>
             </div>
           </div>
-      )
-    );
+        )
+      );
+    }
   }
 
   render() {
     return (
-      <div className={`${this.state.isClicked ? 'container1-is-active' : 'container1'}`}>
+      <>
         <div className="header">
-          <i className="bi bi-list" id="hamburger-button" onClick={this.handleClick}></i>
           <h1>Setlists</h1>
         </div>
         <div className="accordion-flush m-auto w-75" id="accordionFlushExample">
@@ -240,7 +245,7 @@ export default class Setlists extends React.Component {
               </div>
             </div>
           </div>
-      </div>
+      </>
     );
   }
 }

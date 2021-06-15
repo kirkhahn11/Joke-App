@@ -74,6 +74,35 @@ app.post('/api/jokeApp/sign-in', (req, res, next) => {
     .catch(err => next(err));
 });
 
+app.patch('/api/jokeApp/sign-in', (req, res, next) => {
+  const { password } = req.body;
+  const userId = 1;
+  if (!password) {
+    throw new ClientError(400, 'Password is a required field');
+  }
+
+  argon2
+    .hash(password)
+    .then(hashedPassword => {
+      const sql = `
+    update "Users"
+    set "password"=$1
+    where "usersId"=$2
+    returning *
+    `;
+      const params = [hashedPassword, userId];
+      db.query(sql, params)
+        .then(result => {
+          const [user] = result.rows;
+          const { usersId, username } = user;
+          const payload = { usersId, username };
+          const token = jwt.sign(payload, process.env.TOKEN_SECRET);
+          res.json({ token, user: payload });
+        })
+        .catch(err => next(err));
+    });
+});
+
 app.use(authorizationMiddleware);
 
 app.get('/api/jokeApp/categories', (req, res, next) => {

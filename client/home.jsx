@@ -10,14 +10,21 @@ export default class Home extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      route: parseRoute(window.location.hash)
+      route: parseRoute(window.location.hash),
+      isClicked: false
     };
+    this.handleClick = this.handleClick.bind(this);
+    this.close = this.close.bind(this);
   }
 
   componentDidMount() {
     window.addEventListener('hashchange', () => {
-      this.setState({ route: parseRoute(window.location.hash) });
+      this.setState({ route: parseRoute(window.location.hash), isClicked: false });
     });
+  }
+
+  handleClick() {
+    this.setState({ isClicked: !this.state.isClicked });
   }
 
   renderPage() {
@@ -36,13 +43,20 @@ export default class Home extends React.Component {
     }
   }
 
+  close() {
+    this.setState({ isClicked: false });
+  }
+
   render() {
     const { route } = this.state;
     return (
      <>
      <div className="main-container">
-       { this.renderPage() }
-        <Background path={route.path}/>
+        <i className="bi bi-list" id={`${this.state.isClicked ? 'hidden' : 'hamburger-button'}`} onClick={this.handleClick}></i>
+        <div className={`${this.state.isClicked ? 'container1-is-active' : 'container1'}`}>
+        { this.renderPage() }
+        </div>
+        <Background path={route.path} onSubmit={this.close}/>
      </div>
      </>
     );
