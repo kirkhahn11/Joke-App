@@ -167,7 +167,7 @@ export default class AddJoke extends React.Component {
             </div>
           </form>
         </div>
-        <div className={`${this.state.modalHidden ? 'category-modal' : 'category-modal hidden'}`}>
+        <div className={`${this.state.modalHidden ? 'category-modal' : 'category-modal visually-hidden'}`}>
           <button type="button" className="btn-close modal-close bg-white" aria-label="Close" onClick={this.onClickModalClose}></button>
           <div className="input-group mb-3 category-modal-input">
             <h1>New Category</h1>

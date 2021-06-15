@@ -11,6 +11,7 @@ export default class EditSetlistForm extends React.Component {
     this.renderJokelist = this.renderJokelist.bind(this);
     this.jokeSelect = this.jokeSelect.bind(this);
     this.addJoke = this.addJoke.bind(this);
+    this.buttonRender = this.buttonRender.bind(this);
   }
 
   componentDidMount() {
@@ -101,14 +102,29 @@ export default class EditSetlistForm extends React.Component {
     }
   }
 
+  buttonRender() {
+    if (this.props.setlist) {
+      if (this.props.setlist.jokes.length !== 0) {
+        return 'btn btn-primary text-center';
+      }
+    } else { return 'visually-hidden'; }
+  }
+
   render() {
+    if (this.props.setlist.jokes) {
+      if (this.props.setlist.jokes.length === this.state.jokes.length) {
+        return (
+          <h5 className='text-center mt-1'>No Jokes To Add</h5>
+        );
+      }
+    }
     return (
         <div className="list-group mt-1">
           <div className="modal-body">
             {this.renderJokelist()}
           </div>
           <div className="text-center mb-2">
-            <button type="button" className={`${this.state.setlistJokes.length !== 0 ? 'btn btn-primary text-center' : 'visually-hidden'}`} onClick={this.addJoke}>Confirm Jokes</button>
+            <button type="button" className={this.buttonRender()} onClick={this.addJoke}>Confirm Jokes</button>
           </div>
         </div >
     );

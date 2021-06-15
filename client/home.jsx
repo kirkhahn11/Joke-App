@@ -52,10 +52,10 @@ export default class Home extends React.Component {
     return (
      <>
      <div className="main-container">
-        <i className="bi bi-list" id={`${this.state.isClicked ? 'hidden' : 'hamburger-button'}`} onClick={this.handleClick}></i>
-        <div className={`${this.state.isClicked ? 'container1-is-active' : 'container1'}`}>
+      <div className={`${this.state.isClicked ? 'container1-is-active' : 'container1'}`}>
+        <i className="bi bi-list" id={`${this.state.isClicked || route.path === '' ? 'hidden' : 'hamburger-button'}`} onClick={this.handleClick}></i>
         { this.renderPage() }
-        </div>
+      </div>
         <Background path={route.path} onSubmit={this.close}/>
      </div>
      </>

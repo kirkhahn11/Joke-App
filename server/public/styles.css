@@ -6,10 +6,6 @@ body {
   text-align: center;
 }
 
-.hidden {
-  display: none;
-}
-
 .background-fixed {
   position: fixed;
   background-color: black;
@@ -20,10 +16,6 @@ body {
 
 .back-btn {
   width: inherit;
-}
-
-.body-background {
-  background-color: #1f0cee;
 }
 
 h1 {
@@ -93,10 +85,6 @@ h1 {
   text-align: center;
 }
 
-#text-area {
-  padding: 200px;
-}
-
 #exampleFormControlTextarea1 {
   height: 60vh;
 }
@@ -107,11 +95,12 @@ h1 {
 
 .category-modal {
   position: fixed;
-  top: 10vh;
-  left: 36vw;
+  top: 50%;
+  left: 50%;
   border: solid black 2px;
   padding: 62px;
   background-color: black;
+  transform: translate(-50%, -50%);
 }
 
 .category-button {
@@ -186,14 +175,45 @@ h1 {
   flex-basis: 75%;
 }
 
-.w-35 {
-  width: 35%;
-}
-
 .lh-37 {
   line-height: 37px;
 }
 
-.h-50 {
-  height: 50%;
+.sign-in-container {
+  width: 42%;
+}
+
+@media screen and (max-width: 480px) {
+  .sign-in-container {
+    height: 75%;
+    width: 75vw;
+  }
+
+  #joke-container {
+    margin: auto;
+    width: 85%;
+    padding: 10px;
+    text-align: center;
+  }
+
+  .category-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    border: solid black 2px;
+    padding: 6px;
+    background-color: black;
+    transform: translate(-50%, -50%);
+  }
+
+  .modal-close {
+    background-color: white;
+    top: 0;
+    left: 0;
+  }
+
+  .stats {
+    display: flex;
+    flex-direction: column;
+  }
 }

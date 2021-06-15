@@ -180,14 +180,14 @@ export default class OldJokes extends React.Component {
       return (
         this.state.jokes.map(jokes =>
           <div className="list-group-item list-group-item-action mb-1" key={jokes.jokeId} value={jokes.jokeId}>
-            <div className="d-flex w-100">
-              <div className="d-flex w-30">
-                <input className="form-check-input" checked={this.state.isClickedInputs[jokes.jokeId]} type="checkbox" onChange={this.jokeSelect} name="radioNoLabel" value={jokes.jokeId} aria-label="..."></input>
-                <h5 className="ms-1">{jokes.title}</h5>
-              </div>
-              <div className="d-flex justify-content-between w-60 ms-4">
-                <small className="lh-lg"><b>Approx Minutes: </b> {jokes.approxMinutes}</small>
-                <small className="lh-lg"><b>Category: </b>{jokes.name}</small>
+            <input className="form-check-input position-absolute" checked={this.state.isClickedInputs[jokes.jokeId]} type="checkbox" onChange={this.jokeSelect} name="radioNoLabel" value={jokes.jokeId} aria-label="..."></input>
+            <div className="d-flex flex-column align-items-center">
+              <h4 className="ms-1 text-center">{jokes.title}</h4>
+              <div className="d-flex justify-content-between w-100 ms-4">
+                <div className="stats">
+                  <small className="lh-lg"><b>Minutes: </b> {jokes.approxMinutes}</small>
+                  <small className="lh-lg"><b>Category: </b>{jokes.name}</small>
+                </div>
                 <div className="d-flex mt-n1">
                   <button className="btn btn-link" type="button" onClick={this.editModal} value={jokes.jokeId}>Edit</button>
                   <button type="button" className="btn btn-link link-danger" onClick={this.deleteJoke} value={jokes.jokeId}>Delete</button>
@@ -211,7 +211,7 @@ export default class OldJokes extends React.Component {
           {this.renderJokeList()}
           <button type="submit" className={`${this.state.setlistJokes.length === 0 ? 'visually-hidden' : 'btn btn-primary w-25 m-auto mt-1'}`} onClick={this.setlistModal}>Create Setlist</button>
         </div>
-          <div className={this.state.isClickedEdit ? 'modal-is-active' : 'modal'}tabIndex="-1">
+          <div className={this.state.isClickedEdit ? 'modal-is-active' : 'modal'}>
             <div className="modal-dialog modal-xl">
               <div className="modal-content bg-dark text-white">
                 <div className="modal-header ps-10">
@@ -222,7 +222,7 @@ export default class OldJokes extends React.Component {
             </div>
           </div>
         </div>
-        <div className={this.state.isClickedSetlist ? 'modal-is-active' : 'modal'} tabIndex="-1">
+        <div className={this.state.isClickedSetlist ? 'modal-is-active' : 'modal'}>
           <div className="modal-dialog modal-m">
             <div className="modal-content bg-dark text-white">
               <div className="modal-header ps-10 pt-0 pb-0">
