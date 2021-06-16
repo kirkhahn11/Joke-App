@@ -184,11 +184,11 @@ export default class OldJokes extends React.Component {
             <div className="d-flex flex-column align-items-center">
               <h4 className="ms-1 text-center">{jokes.title}</h4>
               <div className="d-flex justify-content-between w-100">
-                <div className="stats fb-30">
+                <div className="stats fb-31">
                   <small className="lh-lg"><b>Minutes: </b> {jokes.approxMinutes}</small>
-                  <small className="lh-lg ms-2"><b>Category: </b>{jokes.name}</small>
+                  <small className="lh-lg ml-2"><b>Category: </b>{jokes.name}</small>
                 </div>
-                <div className="d-flex mt-n1">
+                <div className="d-flex mt-n1 stats">
                   <button className="btn btn-link" type="button" onClick={this.editModal} value={jokes.jokeId}>Edit</button>
                   <button type="button" className="btn btn-link link-danger" onClick={this.deleteJoke} value={jokes.jokeId}>Delete</button>
                 </div>
