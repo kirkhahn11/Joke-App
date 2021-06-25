@@ -114,7 +114,7 @@ export default class EditJokeForm extends React.Component {
       </div>
         <div className="mb-3 text-center p-1">
           <label htmlFor="exampleFormControlTextarea1" className="form-label"></label>
-          <textarea className="form-control" name='joke' id="exampleFormControlTextarea2" rows="3" onChange={this.handleChange} placeholder={`Joke: '${this.props.jokes.joke}`}></textarea>
+          <textarea className="form-control" name='joke' id="exampleFormControlTextarea2" rows="3" onChange={this.handleChange} placeholder={`Joke: '${this.props.jokes.joke}'`}></textarea>
           <button className="btn btn-primary mt-3" type="submit" id="button-addon2">Update Your Joke?</button>
         </div>
     </form>
