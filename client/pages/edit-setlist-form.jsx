@@ -104,10 +104,11 @@ export default class EditSetlistForm extends React.Component {
 
   buttonRender() {
     if (this.props.setlist) {
-      if (this.props.setlist.jokes.length !== 0) {
-        return 'btn btn-primary text-center';
+      if (this.props.setlist.jokes.length === 0) {
+        return 'visually-hidden';
       }
-    } else { return 'visually-hidden'; }
+    }
+    return 'btn btn-primary text-center';
   }
 
   render() {

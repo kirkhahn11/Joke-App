@@ -15,6 +15,7 @@ export default class Home extends React.Component {
     };
     this.handleClick = this.handleClick.bind(this);
     this.close = this.close.bind(this);
+    this.handleClose = this.handleClose.bind(this);
   }
 
   componentDidMount() {
@@ -24,6 +25,10 @@ export default class Home extends React.Component {
   }
 
   handleClick() {
+    this.setState({ isClicked: !this.state.isClicked });
+  }
+
+  handleClose() {
     this.setState({ isClicked: !this.state.isClicked });
   }
 
@@ -52,6 +57,7 @@ export default class Home extends React.Component {
     return (
      <>
      <div className="main-container">
+      <a className={`${this.state.isClicked ? 'container1-close' : 'hidden'}`} onClick={this.handleClose}></a>
       <div className={`${this.state.isClicked ? 'container1-is-active' : 'container1'}`}>
         <i className="bi bi-list" id={`${this.state.isClicked || route.path === '' ? 'hidden' : 'hamburger-button'}`} onClick={this.handleClick}></i>
         { this.renderPage() }
