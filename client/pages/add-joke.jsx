@@ -167,11 +167,15 @@ export default class AddJoke extends React.Component {
             </div>
           </form>
         </div>
-        <div className={`${this.state.modalHidden ? 'category-modal' : 'category-modal visually-hidden'}`}>
-          <button type="button" className="btn-close modal-close bg-white" aria-label="Close" onClick={this.onClickModalClose}></button>
-          <div className="input-group mb-3 category-modal-input">
-            <h1>New Category</h1>
-            <CategoryForm onSubmit={this.addCategory} />
+        <div className={`${this.state.modalHidden ? 'modal-is-active' : 'modal'}`}>
+          <div className="modal-dialog">
+            <div className="modal-content bg-dark text-white text-center h-165 justify-content-center">
+              <div className="d-flex w-100 align-items-center p-1">
+                <h2 className="text-white mb-1 text-center fb-100">New Category</h2>
+                <button type="button" className="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close" onClick={this.onClickModalClose}></button>
+              </div>
+              <CategoryForm onSubmit={this.addCategory} />
+            </div>
           </div>
         </div>
         <div className={this.state.isClickedSuccess ? 'modal-is-active' : 'modal'} tabIndex="-1">
@@ -186,6 +190,7 @@ export default class AddJoke extends React.Component {
             </div>
           </div>
         </div>
+        <div className={`${this.state.isClickedEdit || this.state.isClickedDelete || this.state.modalHidden ? 'modal-backdrop b-drop' : ''}`}></div>
       </>
     );
   }

@@ -242,6 +242,7 @@ export default class Setlists extends React.Component {
               </div>
             </div>
           </div>
+          <div className={`${this.state.isClickedEdit || this.state.isClickedDelete ? 'modal-backdrop b-drop' : ''}`}></div>
       </>
     );
   }

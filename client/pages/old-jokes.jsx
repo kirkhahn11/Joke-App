@@ -1,5 +1,6 @@
 import React from 'react';
 import EditJokeForm from './edit-joke-form';
+import DeleteForm from './delete-form';
 import ConfirmSetlistForm from './confirm-setlist-form';
 
 export default class OldJokes extends React.Component {
@@ -8,10 +9,12 @@ export default class OldJokes extends React.Component {
     this.state = {
       jokes: '',
       editedJoke: [],
+      deletedJoke: '',
       targetId: '',
       isClicked: false,
       isClickedEdit: false,
       isClickedSetlist: false,
+      isClickedDelete: false,
       setlistJokes: [],
       setlistJokelist: [],
       setlistName: '',
@@ -31,6 +34,8 @@ export default class OldJokes extends React.Component {
     this.handleChangeName = this.handleChangeName.bind(this);
     this.submitSetlist = this.submitSetlist.bind(this);
     this.confirmClose = this.confirmClose.bind(this);
+    this.deleteModal = this.deleteModal.bind(this);
+    this.closeDeleteModal = this.closeDeleteModal.bind(this);
   }
 
   componentDidMount() {
@@ -56,11 +61,11 @@ export default class OldJokes extends React.Component {
     this.setState({ isClicked: !this.state.isClicked });
   }
 
-  deleteJoke(event) {
+  deleteJoke(id) {
     const token = localStorage.getItem('joke-app-jwt');
     const jokeList = [...this.state.jokes];
     const jokeId = {
-      jokeId: event.target.value
+      jokeId: id
     };
     fetch('/api/jokeApp', {
       method: 'DELETE',
@@ -73,9 +78,9 @@ export default class OldJokes extends React.Component {
       .then(res => res.json())
       .then(data => {
         for (let i = 0; i < jokeList.length; i++) {
-          if (jokeList[i].jokeId.toString() === event.target.value.toString()) {
+          if (jokeList[i].jokeId.toString() === id.toString()) {
             jokeList.splice(i, 1);
-            this.setState({ jokes: jokeList });
+            this.setState({ jokes: jokeList, isClickedDelete: !this.state.isClickedDelete });
           }
         }
       });
@@ -87,6 +92,18 @@ export default class OldJokes extends React.Component {
         this.setState({ isClickedEdit: !this.state.isClickedEdit, targetId: event.target.value, editedJoke: this.state.jokes[i] });
       }
     }
+  }
+
+  deleteModal(event) {
+    for (let i = 0; i < this.state.jokes.length; i++) {
+      if (this.state.jokes[i].jokeId.toString() === event.target.value.toString()) {
+        this.setState({ isClickedDelete: !this.state.isClickedDelete, deletedJoke: this.state.jokes[i] });
+      }
+    }
+  }
+
+  closeDeleteModal() {
+    this.setState({ isClickedDelete: false });
   }
 
   setlistModal() {
@@ -179,7 +196,7 @@ export default class OldJokes extends React.Component {
     } else {
       return (
         this.state.jokes.map(jokes =>
-          <div className="list-group-item list-group-item-action mb-1" key={jokes.jokeId} value={jokes.jokeId}>
+          <div className="list-group-item mb-1" key={jokes.jokeId} value={jokes.jokeId}>
             <input className="form-check-input position-absolute" checked={this.state.isClickedInputs[jokes.jokeId]} type="checkbox" onChange={this.jokeSelect} name="radioNoLabel" value={jokes.jokeId} aria-label="..."></input>
             <div className="d-flex flex-column align-items-center">
               <h4 className="ms-1 text-center">{jokes.title}</h4>
@@ -190,7 +207,7 @@ export default class OldJokes extends React.Component {
                 </div>
                 <div className="d-flex mt-n1 stats">
                   <button className="btn btn-link" type="button" onClick={this.editModal} value={jokes.jokeId}>Edit</button>
-                  <button type="button" className="btn btn-link link-danger" onClick={this.deleteJoke} value={jokes.jokeId}>Delete</button>
+                  <button type="button" className="btn btn-link link-danger" onClick={this.deleteModal} value={jokes.jokeId}>Delete</button>
                 </div>
               </div>
             </div>
@@ -254,6 +271,15 @@ export default class OldJokes extends React.Component {
             </div>
           </div>
         </div>
+        <div className={this.state.isClickedDelete ? 'modal-is-active' : 'modal'} tabIndex="-1">
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <button type="button" className="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close" onClick={this.closeDeleteModal}></button>
+              <DeleteForm deletedJoke={this.state.deletedJoke} onSubmit={this.deleteJoke}/>
+            </div>
+          </div>
+        </div>
+        <div className={`${this.state.isClickedEdit || this.state.isClickedSetlist || this.state.isClickedDelete ? 'modal-backdrop b-drop' : ''}`}></div>
       </>
     );
   }

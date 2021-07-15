@@ -26,12 +26,11 @@ export default class CategoryForm extends React.Component {
     return (
       <form onSubmit={this.handleSubmit}>
         <input type="text"
-        className="form-control"
-        aria-label="Recipient's username"
-        aria-describedby="button-addon2"
+        className="form-control w-75 m-auto"
+        placeholder="New Category!"
         onChange={this.handleChange}
         value={value}></input>
-        <button className="btn btn-primary mt-3" type="submit" id="button-addon2">Submit</button>
+        <button className="btn btn-primary mt-3 mb-1" type="submit" id="button-addon2">Submit</button>
       </form>
     );
   }

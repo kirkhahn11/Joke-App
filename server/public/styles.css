@@ -47,6 +47,13 @@ h1 {
   pointer-events: none;
 }
 
+.container1-close {
+  height: 100%;
+  position: absolute;
+  width: 75%;
+  z-index: 0;
+}
+
 #hamburger-button {
   background-color: white;
   width: 30px;
@@ -192,6 +199,18 @@ h1 {
 
 .direction {
   flex-direction: row;
+}
+
+.b-drop {
+  opacity: 0.6;
+}
+
+.h-165 {
+  height: 165px;
+}
+
+.fb-100 {
+  flex-basis: 100%;
 }
 
 @media screen and (max-width: 480px) {
