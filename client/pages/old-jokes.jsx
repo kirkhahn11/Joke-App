@@ -47,14 +47,22 @@ export default class OldJokes extends React.Component {
         'X-access-token': token
       }
     })
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) {
+          window.alert('Could not fetch Joke App data');
+          throw Error('Could not fetch Joke App data');
+        } else {
+          return res.json();
+        }
+      })
       .then(jokes => {
         const isClickedInputs = {};
         for (let i = 0; i < jokes.length; i++) {
           isClickedInputs[jokes[i].jokeId] = false;
         }
         this.setState({ jokes, isClickedInputs });
-      });
+      })
+      .catch(err => console.error(err.message));
   }
 
   handleClick(event) {
@@ -75,7 +83,14 @@ export default class OldJokes extends React.Component {
       },
       body: JSON.stringify(jokeId)
     })
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) {
+          window.alert('Unexpected Error');
+          throw Error('Unexpected Error');
+        } else {
+          return res.json();
+        }
+      })
       .then(data => {
         for (let i = 0; i < jokeList.length; i++) {
           if (jokeList[i].jokeId.toString() === id.toString()) {
@@ -83,7 +98,8 @@ export default class OldJokes extends React.Component {
             this.setState({ jokes: jokeList, isClickedDelete: !this.state.isClickedDelete });
           }
         }
-      });
+      })
+      .catch(err => console.error(err.message));
   }
 
   editModal(event) {
@@ -180,8 +196,20 @@ export default class OldJokes extends React.Component {
         'X-access-token': token
       },
       body: JSON.stringify(newSetlist)
-    });
-    this.setState({ setlistName: '', totalMinutes: 0, setlistJokelist: [], setlistJokes: [], isClickedSetlist: false, isClickedInputs: jokelist, isClickedSuccess: true });
+    })
+      .then(res => {
+        if (res.status === 400) {
+          window.alert('Setlist Name is a Required Field');
+          throw Error('Setlist Name is a Required Field');
+        } else if (!res.ok) {
+          window.alert('Could not fetch Joke App data');
+          throw Error('Could not fetch Joke App data');
+        } else {
+          return res.json();
+        }
+      })
+      .then(res => this.setState({ setlistName: '', totalMinutes: 0, setlistJokelist: [], setlistJokes: [], isClickedSetlist: false, isClickedInputs: jokelist, isClickedSuccess: true }))
+      .catch(err => console.error(err.message));
   }
 
   confirmClose() {

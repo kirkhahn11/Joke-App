@@ -36,8 +36,17 @@ export default class AddJoke extends React.Component {
         'X-access-token': token
       }
     })
-      .then(res => res.json())
-      .then(categories => this.setState({ categories, token, joke: '', title: '' }));
+      .then(res => {
+        if (res.ok) {
+          return res.json();
+        } else {
+          window.alert('Could not fetch Joke App data');
+          throw Error('Could not fetch Joke App data');
+        }
+      })
+      .then(categories => this.setState({ categories, token, joke: '', title: '' }))
+      // eslint-disable-next-line no-console
+      .catch(err => console.error(err.message));
   }
 
   handleChangeJoke(event) {
@@ -64,11 +73,21 @@ export default class AddJoke extends React.Component {
       },
       body: JSON.stringify(newJoke)
     })
-      .then(res => res.json())
-      .then(data => {
-
-        this.setState({ joke: '', title: '', categoryId: '', textDisabled: true, isClickedSuccess: true });
-      });
+      .then(res => {
+        if (res.status === 400) {
+          this.setState({ joke: '', title: '', categoryId: '', textDisabled: true });
+          window.alert('Joke Name and Joke are Required');
+          throw Error('Joke Name and Joke are Required');
+        } else if (!res.ok) {
+          this.setState({ joke: '', title: '', categoryId: '', textDisabled: true });
+          window.alert('Unexpected Error');
+          throw Error('Unexpected Error');
+        } else {
+          return res.json();
+        }
+      })
+      .then(data => this.setState({ joke: '', title: '', categoryId: '', textDisabled: true, isClickedSuccess: true }))
+      .catch(err => console.error(err.message));
   }
 
   handleClick(event) {
@@ -86,7 +105,17 @@ export default class AddJoke extends React.Component {
       },
       body: JSON.stringify({ category: category })
     })
-      .then(res => res.json())
+      .then(res => {
+        if (res.status === 400) {
+          window.alert('Category Name is Required');
+          throw Error('Category Name is Required');
+        } else if (!res.ok) {
+          window.alert('Unexpected Error');
+          throw Error('Unexpected Error');
+        } else {
+          return res.json();
+        }
+      })
       .then(data => {
         categoryList.push(data);
         this.setState({ categories: categoryList, modalHidden: false });

@@ -98,8 +98,16 @@ export default class EditJokeForm extends React.Component {
       },
       body: JSON.stringify(editedJoke)
     })
-      .then(res => res.json())
-      .then(editedJoke => this.props.onSubmit(editedJoke));
+      .then(res => {
+        if (!res.ok) {
+          window.alert('Unexpected Error');
+          throw Error('Unexpected Error');
+        } else {
+          return res.json();
+        }
+      })
+      .then(editedJoke => this.props.onSubmit(editedJoke))
+      .catch(err => console.error(err.message));
     this.setState({ joke: '', approxMinutes: '', categoryId: '', category: [], title: '' });
   }
 

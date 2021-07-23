@@ -261,7 +261,7 @@ app.post('/api/jokeApp/setlist', (req, res, next) => {
 
 app.post('/api/jokeApp/setlistJokes', (req, res, next) => {
   const { setlistId, jokeId } = req.body;
-  if (!setlistId || !jokeId) {
+  if (!setlistId || jokeId.length === 0) {
     res.status(400).json({
       error: 'JokeId and setlistId are required field'
     });

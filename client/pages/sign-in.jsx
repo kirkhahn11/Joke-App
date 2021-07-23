@@ -41,12 +41,23 @@ export default class SignIn extends React.Component {
       },
       body: JSON.stringify(newUser)
     })
-      .then(res => res.json())
+      .then(res => {
+        if (res.status === 400) {
+          window.alert('Username and Password are Required Fields');
+          throw Error('Username and Password are Required Fields');
+        } else if (!res.ok) {
+          window.alert('Unexpected Error');
+          throw Error('Unexpected Error');
+        } else {
+          return res.json();
+        }
+      })
       .then(user => {
         this.setState({ password: '', username: '' });
         window.localStorage.setItem('joke-app-jwt', user.token);
         window.location.hash = '#addJokes';
-      });
+      })
+      .catch(err => console.error(err.message));
   }
 
   signIn() {
@@ -71,7 +82,8 @@ export default class SignIn extends React.Component {
           window.alert(user.error);
           this.setState({ password: '', username: '' });
         }
-      });
+      })
+      .catch(err => console.error(err.message));
   }
 
   signInDemo() {
@@ -88,7 +100,14 @@ export default class SignIn extends React.Component {
       },
       body: JSON.stringify(user)
     })
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) {
+          window.alert('Unexpected Error');
+          throw Error('Unexpected Error');
+        } else {
+          return res.json();
+        }
+      })
       .then(user => {
         if (!user.error) {
           window.localStorage.setItem('joke-app-jwt', user.token);
@@ -96,7 +115,8 @@ export default class SignIn extends React.Component {
         } else {
           window.alert(user.error);
         }
-      });
+      })
+      .catch(err => console.error(err.message));
   }
 
   render() {
