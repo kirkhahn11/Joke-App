@@ -36,10 +36,18 @@ export default class Setlists extends React.Component {
         'X-access-token': token
       }
     })
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) {
+          window.alert('Unexpected Error');
+          throw Error('Unexpected Error');
+        } else {
+          return res.json();
+        }
+      })
       .then(setlists =>
         this.setState({ setlists })
-      );
+      )
+      .catch(err => console.error(err.message));
   }
 
   handleClick(event) {
@@ -92,7 +100,14 @@ export default class Setlists extends React.Component {
       },
       body: JSON.stringify(setlistId)
     })
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) {
+          window.alert('Unexpected Error');
+          throw Error('Unexpected Error');
+        } else {
+          return res.json();
+        }
+      })
       .then(data => {
         for (let i = 0; i < setlists.length; i++) {
           if (setlists[i].setlistId.toString() === this.state.deleteSetlist.setlistId.toString()) {
@@ -100,7 +115,8 @@ export default class Setlists extends React.Component {
             this.setState({ setlists: setlists, isClickedDelete: false, deleteSetlist: '' });
           }
         }
-      });
+      })
+      .catch(err => console.error(err.message));
   }
 
   deleteJoke(event) {
@@ -134,10 +150,18 @@ export default class Setlists extends React.Component {
       },
       body: JSON.stringify(jokeId)
     })
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) {
+          window.alert('Unexpected Error');
+          throw Error('Unexpected Error');
+        } else {
+          return res.json();
+        }
+      })
       .then(data => {
         this.setState({ setlists });
-      });
+      })
+      .catch(err => console.error(err.message));
   }
 
   addJoke(jokeId, setlistId, jokesAdded) {
@@ -168,8 +192,20 @@ export default class Setlists extends React.Component {
         'X-access-token': token
       },
       body: JSON.stringify(setlistJoke)
-    });
-    this.setState({ isClickedEdit: false, editedSetlist: '', setlist: setlistClone });
+    })
+      .then(res => {
+        if (res.status === 400) {
+          window.alert('At Least One Joke Must Be Selected');
+          throw Error('At Least One Joke Must Be Selected');
+        } else if (!res.ok) {
+          window.alert('Unexpected Error');
+          throw Error('Unexpected Error');
+        } else {
+          return res.json();
+        }
+      })
+      .then(res => this.setState({ isClickedEdit: false, editedSetlist: '', setlist: setlistClone }))
+      .catch(err => console.error(err.message));
   }
 
   renderSetlist() {

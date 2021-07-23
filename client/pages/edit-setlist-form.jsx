@@ -23,14 +23,22 @@ export default class EditSetlistForm extends React.Component {
         'X-access-token': token
       }
     })
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) {
+          window.alert('Unexpected Error');
+          throw Error('Unexpected Error');
+        } else {
+          return res.json();
+        }
+      })
       .then(jokes => {
         const isClickedInputs = {};
         for (let i = 0; i < jokes.length; i++) {
           isClickedInputs[jokes[i].jokeId] = false;
         }
         this.setState({ jokes, isClickedInputs });
-      });
+      })
+      .catch(err => console.error(err.message));
   }
 
   jokeSelect(event) {
