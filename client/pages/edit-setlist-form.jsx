@@ -83,22 +83,13 @@ export default class EditSetlistForm extends React.Component {
   renderJokelist() {
     const addJokelist = [...this.state.jokes];
     if (this.props.setlist.jokes) {
-      addJokelist.map(jokes => {
-        for (let i = 0; i < this.props.setlist.jokes.length; i++) {
-          if (jokes.jokeId === this.props.setlist.jokes[i].jokeId) {
-            for (let x = 0; x < addJokelist.length; x++) {
-              if (jokes.jokeId === addJokelist[x].jokeId) {
-                addJokelist.splice(x, 1);
-              }
-            }
-          }
-        }
-        return addJokelist;
+      const newList = addJokelist.filter(jokes => {
+        const foundIndex = this.props.setlist.jokes.findIndex(x => x.jokeId === jokes.jokeId);
+
+        return foundIndex === -1;
       });
-    }
-    if (this.props.setlist.jokes) {
       return (
-        addJokelist.map(jokes =>
+        newList.map(jokes =>
       <div className="list-group-item list-group-item-action mb-1" key={jokes.jokeId} value={jokes.jokeId}>
         <div className="d-flex w-100">
           <div className="d-flex fb-75">
