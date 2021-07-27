@@ -12,7 +12,8 @@ export default class AddJoke extends React.Component {
       modalHidden: false,
       textDisabled: true,
       categoryId: '',
-      isClickedSuccess: false
+      isClickedSuccess: false,
+      isLoaded: false
     };
     this.handleChangeJoke = this.handleChangeJoke.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -44,7 +45,7 @@ export default class AddJoke extends React.Component {
           throw Error('Could not fetch Joke App data');
         }
       })
-      .then(categories => this.setState({ categories, token, joke: '', title: '' }))
+      .then(categories => this.setState({ categories, token, joke: '', title: '', isLoaded: true }))
       // eslint-disable-next-line no-console
       .catch(err => console.error(err.message));
   }
@@ -177,7 +178,14 @@ export default class AddJoke extends React.Component {
   }
 
   render() {
-    return (
+    if (!this.state.isLoaded) {
+      return (
+      <div className="progress w-75 m-auto mt-5">
+        <div className="progress-bar progress-bar-striped progress-bar-animated w-50" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+      </div>
+      );
+    } else {
+      return (
       <>
         <div className="header">
           <h1>New Joke</h1>
@@ -221,6 +229,7 @@ export default class AddJoke extends React.Component {
         </div>
         <div className={`${this.state.isClickedEdit || this.state.isClickedDelete || this.state.modalHidden ? 'modal-backdrop b-drop' : ''}`}></div>
       </>
-    );
+      );
+    }
   }
 }

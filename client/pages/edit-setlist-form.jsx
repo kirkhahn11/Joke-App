@@ -83,13 +83,18 @@ export default class EditSetlistForm extends React.Component {
   renderJokelist() {
     const addJokelist = [...this.state.jokes];
     if (this.props.setlist.jokes) {
-      for (let i = 0; i < addJokelist.length; i++) {
-        for (let x = 0; x < this.props.setlist.jokes.length; x++) {
-          if (addJokelist[i].jokeId === this.props.setlist.jokes[x].jokeId) {
-            addJokelist.splice(i, 1);
+      addJokelist.map(jokes => {
+        for (let i = 0; i < this.props.setlist.jokes.length; i++) {
+          if (jokes.jokeId === this.props.setlist.jokes[i].jokeId) {
+            for (let x = 0; x < addJokelist.length; x++) {
+              if (jokes.jokeId === addJokelist[x].jokeId) {
+                addJokelist.splice(x, 1);
+              }
+            }
           }
         }
-      }
+        return addJokelist;
+      });
     }
     if (this.props.setlist.jokes) {
       return (
@@ -112,7 +117,7 @@ export default class EditSetlistForm extends React.Component {
 
   buttonRender() {
     if (this.props.setlist) {
-      if (this.props.setlist.jokes.length === 0) {
+      if (this.state.jokes.length === 0) {
         return 'visually-hidden';
       }
     }

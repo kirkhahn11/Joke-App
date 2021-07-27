@@ -20,7 +20,8 @@ export default class OldJokes extends React.Component {
       setlistName: '',
       totalMinutes: 0,
       isClickedInputs: {},
-      isClickedSuccess: false
+      isClickedSuccess: false,
+      isLoaded: false
     };
     this.handleClick = this.handleClick.bind(this);
     this.renderJokeList = this.renderJokeList.bind(this);
@@ -60,7 +61,7 @@ export default class OldJokes extends React.Component {
         for (let i = 0; i < jokes.length; i++) {
           isClickedInputs[jokes[i].jokeId] = false;
         }
-        this.setState({ jokes, isClickedInputs });
+        this.setState({ jokes, isClickedInputs, isLoaded: true });
       })
       .catch(err => console.error(err.message));
   }
@@ -247,7 +248,14 @@ export default class OldJokes extends React.Component {
   }
 
   render() {
-    return (
+    if (!this.state.isLoaded) {
+      return (
+        <div className="progress w-75 m-auto mt-5">
+          <div className="progress-bar progress-bar-striped progress-bar-animated w-50" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+      );
+    } else {
+      return (
       <>
         <div className="header">
           <h1>Joke List</h1>
@@ -309,6 +317,7 @@ export default class OldJokes extends React.Component {
         </div>
         <div className={`${this.state.isClickedEdit || this.state.isClickedSetlist || this.state.isClickedDelete ? 'modal-backdrop b-drop' : ''}`}></div>
       </>
-    );
+      );
+    }
   }
 }
